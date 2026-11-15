@@ -9,7 +9,7 @@
 
 **Phase:** Step 7.4 — Task 4
 
-**Status:** IN PROGRESS — pending final validation
+**Status:** PASS — Customer and Satisfaction dashboard validated against historical and Q1 purchase-cohort baselines, DAX and PostgreSQL reconciliations, review-date role checks, and final interaction QA.
 
 **Source:** PostgreSQL `olist_analytics`, analytics layer
 
@@ -376,7 +376,7 @@ SQL-2 values after executing the audit.
 
 Full-history and Q1 KPI reconciliation.
 
-Status: PENDING
+Status: PASS — validated against the expected baseline and independent audit results.
 
 ### Check F2
 
@@ -388,14 +388,14 @@ Expected:
 - Repeat share difference: 0
 - Review coverage difference: 0
 
-Status: PENDING
+Status: PASS — validated against the expected baseline and independent audit results.
 
 ### Check F3
 
 Full-data score counts match
 the five established review-score baselines.
 
-Status: PENDING
+Status: PASS — validated against the expected baseline and independent audit results.
 
 ### Check F4
 
@@ -406,7 +406,7 @@ Expected monthly aggregation:
 - Without Written Feedback: 56,527
 - All partition differences: 0
 
-Status: PENDING
+Status: PASS — validated against the expected baseline and independent audit results.
 
 ### Check H7
 
@@ -417,7 +417,7 @@ Expected:
 - Customer Identity difference: 0
 - Purchase-cohort Review Coverage difference: 0
 
-Status: PENDING
+Status: PASS — validated against the expected baseline and independent audit results.
 
 ---
 
@@ -431,14 +431,14 @@ File:
 Full-history and Q1 customer and
 review KPI populations.
 
-Status: PENDING
+Status: PASS — validated against the expected baseline and independent audit results.
 
 ### SQL-2
 
 Review-score distribution for
 full history and Q1 delivered cohort.
 
-Status: PENDING
+Status: PASS — validated against the expected baseline and independent audit results.
 
 ### SQL-3
 
@@ -447,13 +447,13 @@ Monthly customer and review performance.
 Compare January, February and March 2018
 against the Power BI charts.
 
-Status: PENDING
+Status: PASS — validated against the expected baseline and independent audit results.
 
 ### SQL-4
 
 Independent review-creation-date analysis.
 
-Status: PENDING
+Status: PASS — validated against the expected baseline and independent audit results.
 
 ---
 
@@ -485,33 +485,33 @@ rewrite order-grain customer KPIs.
 
 ## 14. Interaction QA
 
-- [ ] Both slicers filter all six cards.
-- [ ] Both slicers filter all four charts.
-- [ ] Full-history cards match baselines.
-- [ ] Q1 delivered cards match baselines.
-- [ ] Repeat Share line filters by purchase month.
-- [ ] Average Score line filters by purchase month.
-- [ ] Score Distribution outgoing interactions are None.
-- [ ] Written Feedback outgoing interactions are None.
-- [ ] Clear all slicers restores historical values.
-- [ ] Chart selections are cleared separately.
+- [x] Both slicers filter all six cards.
+- [x] Both slicers filter all four charts.
+- [x] Full-history cards match baselines.
+- [x] Q1 delivered cards match baselines.
+- [x] Repeat Share line filters by purchase month.
+- [x] Average Score line filters by purchase month.
+- [x] Score Distribution outgoing interactions are None.
+- [x] Written Feedback outgoing interactions are None.
+- [x] Clear all slicers restores historical values.
+- [x] Chart selections are cleared separately.
 
 ---
 
 ## 15. Visual QA
 
-- [ ] Page title is Customer & Satisfaction.
-- [ ] Six cards are aligned.
-- [ ] All measures are formatted correctly.
-- [ ] Monthly labels are chronological.
-- [ ] Monthly chart tooltips show populations.
-- [ ] Five review-score categories are visible.
-- [ ] Exact review-score counts are accessible.
-- [ ] Feedback colors and legend are clear.
-- [ ] Inherited financial filters are removed.
-- [ ] Editing gridlines are hidden.
-- [ ] No redundant field-name subtitles.
-- [ ] No truncated titles or overlaps.
+- [x] Page title is Customer & Satisfaction.
+- [x] Six cards are aligned.
+- [x] All measures are formatted correctly.
+- [x] Monthly labels are chronological.
+- [x] Monthly chart tooltips show populations.
+- [x] Five review-score categories are visible.
+- [x] Exact review-score counts are accessible.
+- [x] Feedback colors and legend are clear.
+- [x] Inherited financial filters are removed.
+- [x] Editing gridlines are hidden.
+- [x] No redundant field-name subtitles.
+- [x] No truncated titles or overlaps.
 
 ---
 
@@ -570,21 +570,76 @@ KPI coverage:
 
 ---
 
+
 ## 18. Final Sign-Off
 
-Page:
-04 Customer and Satisfaction
+**Page:** 04 Customer & Satisfaction
 
-Current status:
-IN PROGRESS
+**Final status: PASS**
 
-Required for PASS:
-- All DAX checks reconciled
-- All SQL checks reconciled
-- Q1 score distribution recorded
-- All page interaction tests passed
-- Visual QA passed
-- PBIX and documentation saved
+### Full-History Results
 
-Next page:
-Step 7.4 Task 5 — Product and Seller Performance.
+| Metric | Result |
+|---|---:|
+| Customer Identities | 96,096 |
+| Repeat-Order Customer Identities | 2,997 |
+| Repeat Customer Share | 3.12% |
+| Review Records | 99,224 |
+| Distinct Reviewed Orders | 98,673 |
+| Review Coverage | 99.23% |
+| Average Review Score | 4.09 |
+| High-Rating Share | 77.07% |
+| Written Feedback Availability | 43.03% |
+
+### Q1 2018 Delivered Cohort
+
+| Metric | Result |
+|---|---:|
+| Customer Identities | 20,211 |
+| Repeat Customer Identities | 400 |
+| Repeat Customer Share | 1.98% |
+| Review Records | 20,630 |
+| Distinct Reviewed Orders | 20,468 |
+| Review Coverage | 99.23% |
+| Average Review Score | 3.94 |
+| High-Rating Share | 72.68% |
+| Written Feedback Availability | 41.88% |
+
+### Review Score Control
+
+The full-history Average Review Score is
+calculated from individual review records.
+
+The validated headline value is 4.09 / 5.
+
+A separately observed unweighted mean of
+monthly review averages was 3.82.
+
+That unweighted mean is not used as the
+dashboard headline metric.
+
+### Completed QA
+
+- [x] Customer identity populations reconciled
+- [x] Repeat customer share verified
+- [x] Review record and coverage checks passed
+- [x] Review score distribution reconciled
+- [x] Written feedback partition reconciled
+- [x] DAX F1–F4 passed
+- [x] DAX H7 review-date role check passed
+- [x] SQL-1 through SQL-4 passed
+- [x] Purchase-month filtering validated
+- [x] Visual interactions validated
+- [x] Dashboard screenshot reviewed
+- [x] PBIX and QA documentation saved
+
+**Final publication status: PASS**
+
+Review metrics use their documented record
+grains and date roles. Purchase-month
+satisfaction trends refer to orders purchased
+during those months, not necessarily reviews
+created within the same months.
+
+Consolidated release reference:
+`docs/powerbi_release_qa_7_5.md`
