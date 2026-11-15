@@ -351,7 +351,7 @@ Customers, reviews, products and sellers.
 Expected:
 Two cohorts matching Section 10 and 11.
 
-Status: PENDING
+Status: PASS — validated during Step 7.5 release QA.
 
 ### DAX-R3
 
