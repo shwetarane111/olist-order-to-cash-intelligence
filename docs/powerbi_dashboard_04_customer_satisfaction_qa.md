@@ -566,7 +566,7 @@ QA:
 `docs/powerbi_dashboard_04_customer_satisfaction_qa.md`
 
 KPI coverage:
-`docs/powerbi_kpi_coverage_final_after_task11.csv`
+`docs/powerbi_kpi_coverage.csv`
 
 ---
 
