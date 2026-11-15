@@ -554,7 +554,7 @@ Page 03 QA:
 docs/powerbi_dashboard_03_financial_reconciliation_qa.md
 
 KPI coverage:
-docs/powerbi_kpi_coverage_final_after_task11.csv
+docs/powerbi_kpi_coverage.csv
 
 ---
 
