@@ -354,7 +354,7 @@ SWITCH(
 -- QA:
 -- docs/powerbi_dashboard_06_geographic_quality_qa.md
 
--- Sign-off: PENDING final checks.
+-- Sign-off: PASS — Page 06 geographic QA completed.
 
 -- ======================================================
 -- END OF FILE
