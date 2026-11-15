@@ -9,7 +9,7 @@
 
 **Phase:** Step 7.4 — Task 2
 
-**Status:** IN PROGRESS — baseline results recorded; final page QA pending
+**Status:** PASS — Fulfillment dashboard validated against full-history and Q1 2018 delivered-cohort baselines, independent PostgreSQL checks, DAX checks, interaction tests, and final screenshots.
 
 **Data:** Historical Olist marketplace extract, 2016–2018
 
@@ -463,69 +463,50 @@ Reference:
 
 The file contains three SQL queries.
 
+
 ### SQL-1: Fulfillment Baselines
 
-Validates full-dataset and Q1 delivered-cohort:
-
-- Delivered Orders
-- Evaluable Delivered Orders
-- On-Time Deliveries
-- Late Deliveries
-- Missing Actual Delivery Dates
-- Negative Elapsed Durations
-- Evaluation Coverage
-- On-Time Delivery Rate
-- Late Delivery Rate
-- Average Purchase-to-Delivery Days
-- Average Signed Delivery Variance
-
-Acceptance:
-Counts match exactly.
-Rates and averages match to two decimals.
-Population differences equal zero.
-
 Status:
-PENDING final SQL-1 confirmation for this page.
+PASS — Full-history and Q1 2018 delivered-order
+populations, evaluation coverage, on-time and
+late counts, delivery averages, and consistency
+checks reconciled with Power BI.
 
 ### SQL-2: Late Severity Distribution
 
-Expected full-data bands:
-
-- 1-3 days late: 1,870
-- 4-7 days late: 1,802
-- 8-14 days late: 1,478
-- 15+ days late: 1,384
-
-Expected full-data total: 6,534.
-
-Expected Q1 delivered total: 2,657.
-
 Status:
-DAX counts verified; independent SQL-2 confirmation
-and Q1 band-level counts to be recorded.
+PASS — Full-history and Q1 severity bands
+reconciled with DAX and the Power BI dashboard.
+
+Full-history severity bands:
+
+| Late Delivery Band | Orders |
+|---|---:|
+| 1–3 days | 1,870 |
+| 4–7 days | 1,802 |
+| 8–14 days | 1,478 |
+| 15+ days | 1,384 |
+| **Total** | **6,534** |
+
+Q1 2018 delivered severity bands:
+
+| Late Delivery Band | Orders |
+|---|---:|
+| 1–3 days | 628 |
+| 4–7 days | 708 |
+| 8–14 days | 641 |
+| 15+ days | 680 |
+| **Total** | **2,657** |
 
 ### SQL-3: Monthly Purchase-Cohort Validation
 
-Compare PostgreSQL monthly aggregations with
-Power BI monthly line and stacked-column charts.
-
-At minimum, inspect:
-
-- January 2018
-- February 2018
-- March 2018
-
-Metrics:
-
-- Delivered Orders
-- Evaluable Orders
-- On-Time Deliveries
-- Late Deliveries
-- On-Time Delivery Rate
-- Average Purchase-to-Delivery Days
-
 Status:
-PENDING final monthly SQL-to-visual comparison.
+PASS — Monthly fulfillment counts, on-time
+rates and average delivery days reconciled
+between PostgreSQL and Power BI.
+
+January, February and March 2018 were included
+in the monthly comparison.
 
 ---
 
@@ -583,38 +564,38 @@ independent clearing.
 
 ## 12. Dashboard Interaction QA
 
-- [ ] Purchase Date filters all six cards.
-- [ ] Purchase Date filters all four charts.
-- [ ] Order Status filters all six cards.
-- [ ] Order Status filters all four charts.
-- [ ] Monthly on-time line filters by purchase month.
-- [ ] Monthly average-days line filters by purchase month.
-- [ ] Stacked-column outgoing interactions are None.
-- [ ] Severity-chart outgoing interactions are None.
-- [ ] Q1 delivered filters return verified Q1 metrics.
-- [ ] Clear all slicers restores full-history values.
-- [ ] Chart selections are cleared separately.
+- [x] Purchase Date filters all six cards.
+- [x] Purchase Date filters all four charts.
+- [x] Order Status filters all six cards.
+- [x] Order Status filters all four charts.
+- [x] Monthly on-time line filters by purchase month.
+- [x] Monthly average-days line filters by purchase month.
+- [x] Stacked-column outgoing interactions are None.
+- [x] Severity-chart outgoing interactions are None.
+- [x] Q1 delivered filters return verified Q1 metrics.
+- [x] Clear all slicers restores full-history values.
+- [x] Chart selections are cleared separately.
 
 ---
 
 ## 13. Visual Design QA
 
-- [ ] Page title displays `Order Fulfillment`.
-- [ ] Six KPI cards are aligned and not truncated.
-- [ ] All four chart titles are readable.
-- [ ] Monthly X-axis labels are visible.
-- [ ] Month sorting is chronological.
-- [ ] Rate charts use percentage formatting.
-- [ ] Day-based KPIs show two decimal places.
-- [ ] Stacked chart uses teal for on-time.
-- [ ] Stacked chart uses amber for late.
-- [ ] Severity chart displays all four bands.
-- [ ] Severity chart uses ascending severity order.
-- [ ] Severity counts are exact integers.
-- [ ] Tooltips show appropriate eligible populations.
-- [ ] Editing gridlines are hidden.
-- [ ] No redundant auto-generated chart subtitles.
-- [ ] No clipped labels or overlapping elements.
+- [x] Page title displays `Order Fulfillment`.
+- [x] Six KPI cards are aligned and not truncated.
+- [x] All four chart titles are readable.
+- [x] Monthly X-axis labels are visible.
+- [x] Month sorting is chronological.
+- [x] Rate charts use percentage formatting.
+- [x] Day-based KPIs show two decimal places.
+- [x] Stacked chart uses teal for on-time.
+- [x] Stacked chart uses amber for late.
+- [x] Severity chart displays all four bands.
+- [x] Severity chart uses ascending severity order.
+- [x] Severity counts are exact integers.
+- [x] Tooltips show appropriate eligible populations.
+- [x] Editing gridlines are hidden.
+- [x] No redundant auto-generated chart subtitles.
+- [x] No clipped labels or overlapping elements.
 
 ---
 
@@ -709,31 +690,59 @@ KPI coverage:
 
 ---
 
+
 ## 17. Final Sign-Off
 
-Page:
-02 Order Fulfillment
+**Page:** 02 Order Fulfillment
 
-Current status:
-IN PROGRESS — baseline evidence recorded.
+**Final status: PASS**
 
-Confirmed:
-- Full-data fulfillment population baselines
-- Four late-delivery severity counts
-- Zero difference between severity total and late orders
-- Q1 delivered-order counts and rates
-- Q1 average purchase-to-delivery: 15.74 days
-- Q1 average signed variance: -9.25 days
+### Validated Full-History Results
 
-Remaining sign-off:
-- Confirm SQL-1, SQL-2 and SQL-3 results
-- Record the Q1 severity-band breakdown
-- Complete interaction tests
-- Review final screenshot for visual quality
-- Save the final PBIX
+| Metric | Result |
+|---|---:|
+| Delivered Orders | 96,478 |
+| Evaluable Delivered Orders | 96,470 |
+| On-Time Orders | 89,936 |
+| Late Orders | 6,534 |
+| Delivery Evaluation Coverage | 99.99% |
+| On-Time Delivery Rate | 93.23% |
+| Late Delivery Rate | 6.77% |
+| Average Purchase-to-Delivery Days | 12.56 |
+| Signed Delivery Variance Days | -11.88 |
 
-Final publication status:
-PENDING until the remaining checks pass.
+### Validated Q1 2018 Delivered Cohort
 
-Next page:
-Step 7.4 Task 3 — Financial Reconciliation Dashboard.
+| Metric | Result |
+|---|---:|
+| Delivered Orders | 20,627 |
+| Evaluable Delivered Orders | 20,627 |
+| On-Time Orders | 17,970 |
+| Late Orders | 2,657 |
+| On-Time Delivery Rate | 87.12% |
+| Late Delivery Rate | 12.88% |
+| Average Purchase-to-Delivery Days | 15.74 |
+| Signed Delivery Variance Days | -9.25 |
+
+### Completed QA
+
+- [x] Full-history DAX baselines verified
+- [x] Q1 delivered-cohort baselines verified
+- [x] All four late-delivery bands reconciled
+- [x] SQL-1 passed
+- [x] SQL-2 passed
+- [x] SQL-3 passed
+- [x] Monthly chart comparisons passed
+- [x] Slicer interactions tested
+- [x] Outgoing chart interactions tested
+- [x] Dashboard visual QA completed
+- [x] PBIX and documentation saved
+
+**Final publication status: PASS**
+
+The dashboard retains the complete source
+population and uses delivery-evaluable orders
+as the denominator for timeliness metrics.
+
+Consolidated release reference:
+`docs/powerbi_release_qa_7_5.md`
