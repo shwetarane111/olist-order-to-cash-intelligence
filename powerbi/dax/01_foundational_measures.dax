@@ -1,0 +1,47 @@
+
+-- =====================================================
+-- PROJECT: Order-to-Cash Intelligence Platform
+-- STEP 7.3 - TASK 1
+-- FILE: 01_foundational_measures.dax
+-- PURPOSE: Foundational Power BI DAX Measures
+-- =====================================================
+
+-- MEASURE 1: Total Orders
+-- Verified PostgreSQL baseline: 99,441
+
+Total Orders =
+COUNTROWS('fact_orders')
+
+
+-- MEASURE 2: Recorded Item and Freight Value
+-- Verified PostgreSQL baseline: R$15,843,553.24
+
+Recorded Item and Freight Value =
+SUM('fact_order_items'[item_total_amount])
+
+
+-- MEASURE 3: Recorded Payment Volume
+-- Verified PostgreSQL baseline: R$16,008,872.12
+
+Recorded Payment Volume =
+SUM('fact_payments'[payment_amount])
+
+
+-- =====================================================
+-- VALIDATION RESULTS
+-- =====================================================
+
+-- All three measures match PostgreSQL baselines.
+-- Financial differences: 0.00
+--
+-- Delivered Orders: 96,478
+-- Delivered Orders Jan-Mar 2018: 20,627
+--
+-- Note:
+-- Recorded monetary values are not necessarily
+-- recognized revenue or settled payment amounts.
+--
+-- These definitions are stored individually as
+-- measures in Power BI's _Measures table.
+-- This file is a reference, not a standalone
+-- executable DAX query.

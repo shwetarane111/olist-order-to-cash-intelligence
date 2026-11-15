@@ -1,0 +1,33 @@
+
+-- =====================================================
+-- PROJECT: Order-to-Cash Intelligence Platform
+-- FILE: 02_order_fulfillment_measures.dax
+-- STEP 7.3 - TASK 2
+-- PURPOSE: Order and Fulfillment KPI Measures
+-- =====================================================
+
+-- Expected complete-dataset baselines:
+-- Delivered Orders: 96,478
+-- Evaluable Delivered Orders: 96,470
+-- On-Time Deliveries: 89,936
+-- Late Deliveries: 6,534
+-- On-Time Delivery Rate: 93.23%
+-- Average Purchase-to-Delivery Days: 12.56
+-- Average Signed Delivery Variance Days: -11.88
+
+-- Measures are implemented individually in Power BI.
+-- This file is a reference, not a standalone DAX query.
+
+
+-- ADDITIONAL VALIDATION: Q1 2018 PURCHASE COHORT
+-- Delivered Orders: 20,627
+-- Evaluable Delivered Orders: 20,627
+-- On-Time Deliveries: 17,970
+-- Late Deliveries: 2,657
+-- On-Time Delivery Rate: 87.12%
+-- Delivery Classification Difference: 0
+--
+-- Nonblank duration records: 96,470
+-- Nonblank signed variance records: 96,470
+-- Average Delivery Duration: 12.56 days
+-- Average Signed Variance: -11.88 days

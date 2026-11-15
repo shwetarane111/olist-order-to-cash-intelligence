@@ -1,0 +1,125 @@
+
+-- =====================================================
+-- PROJECT: Order-to-Cash Intelligence Platform
+-- STEP 7.3 - TASK 8
+-- FILE: 08_geographic_quality_measures.dax
+-- =====================================================
+
+-- VERIFIED FULL-DATASET GEOGRAPHIC BASELINES
+
+-- Customer Geography Locations: 15,034
+-- Map-Ready Customer Locations: 14,876
+-- Map-Ready Customer Location Rate: 98.95%
+
+-- Orders Without Geo Reference: 278
+-- Orders With Flagged Customer Coordinates: 1
+-- Map-Ready Orders: 99,162
+-- Map-Ready Order Share: 99.72%
+
+-- Map-Ready Item Entries: 112,347
+-- Map-Ready Payment Entries: 103,598
+-- Map-Ready Review Records: 98,944
+
+-- Sellers Without Geo Reference: 7
+-- Sellers With Flagged Coordinates: 0
+-- Map-Ready Sellers: 3,088
+-- Map-Ready Seller Share: 99.77%
+-- Sellers With Reference Label Disagreement: 147
+-- Sellers With Conflicting Reference Labels: 1,566
+
+-- =====================================================
+-- GEOGRAPHIC MODEL DEFINITIONS
+-- =====================================================
+
+-- The Customer Geography dimension has one row per
+-- normalized ZIP/city/state location combination.
+
+-- Map-ready means the representative ZIP coordinate
+-- passed the project's geographic screening rules.
+-- It does not represent a verified customer address.
+
+-- Customer geographic quality measures applied to
+-- fact tables respond to Purchase Date, Order Status,
+-- and other shared dimension filters.
+
+-- Dimension-level location and seller counts do not
+-- automatically respond to Purchase Date or Status
+-- filtering because relationships are single-direction.
+
+-- Missing references and flagged coordinates remain
+-- in all business facts and overall KPI totals.
+
+-- Seller reference-label disagreements are quality
+-- indicators, not proof of incorrect physical addresses.
+
+-- Fact-grain geographic counts must not be added
+-- together as unique customers or unique orders.
+
+-- =====================================================
+-- Q1 2018 DELIVERED-ORDER COHORT
+-- =====================================================
+
+-- Purchase Date: 2018-01-01 through 2018-03-31
+-- Order Status: delivered
+-- Total Delivered Orders: 20,627
+
+-- Add independently verified values after Checks E/F:
+-- Q1 Orders Without Geo Reference:
+-- Q1 Orders With Flagged Coordinates:
+-- Q1 Map-Ready Orders:
+-- Q1 Map-Ready Order Share:
+-- Q1 Map-Ready Item Entries:
+-- Q1 Map-Ready Payment Entries:
+-- Q1 Map-Ready Review Records:
+
+-- =====================================================
+-- VALIDATION STATUS
+-- =====================================================
+
+-- Record actual outcomes after completing Checks C-H.
+-- All coverage partitions must reconcile to zero.
+-- PostgreSQL and Power BI must match at each fact grain.
+
+-- Individual measures are saved under _Measures.
+-- This file is a version-controlled source reference,
+-- not one executable DAX Query View statement.
+
+
+-- =====================================================
+-- VERIFIED Q1 2018 DELIVERED-ORDER GEOGRAPHIC BASELINES
+-- Purchase Date: 2018-01-01 through 2018-03-31
+-- =====================================================
+
+-- ORDERS
+-- Total Records: 20,627
+-- Without Geographic Reference: 59
+-- Flagged Coordinates: 0
+-- Map-Ready Orders: 20,568
+-- Map-Ready Share: 99.71%
+
+-- ORDER ITEMS
+-- Total Records: 23,572
+-- Without Geographic Reference: 62
+-- Flagged Coordinates: 0
+-- Map-Ready Item Entries: 23,510
+-- Map-Ready Share: 99.74%
+
+-- PAYMENTS
+-- Total Records: 21,424
+-- Without Geographic Reference: 62
+-- Flagged Coordinates: 0
+-- Map-Ready Payment Entries: 21,362
+-- Map-Ready Share: 99.71%
+
+-- REVIEWS
+-- Total Records: 20,630
+-- Without Geographic Reference: 58
+-- Flagged Coordinates: 0
+-- Map-Ready Review Records: 20,572
+-- Map-Ready Share: 99.72%
+
+-- VALIDATION
+-- All 8 PostgreSQL geographic audit rows: PASS
+-- Missing Dimension Links: 0
+-- Geographic Partition Differences: 0
+-- SQL / DAX comparisons: MATCH

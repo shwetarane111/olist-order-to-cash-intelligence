@@ -1,0 +1,516 @@
+
+-- ======================================================
+-- PROJECT: Order-to-Cash Intelligence Platform
+-- STEP 7.5: CROSS-PAGE RELEASE CHECKS
+-- FILE: 16_cross_page_release_checks.dax
+-- TYPE: DAX QUERY VIEW VALIDATION
+-- ======================================================
+
+-- Standard cohorts:
+-- ALL: Full historical dataset.
+-- Q1_2018_DELIVERED:
+-- Purchase 2018-01-01 through 2018-03-31
+-- AND order_status = delivered.
+--
+-- Select and run each EVALUATE query separately.
+
+
+-- ======================================================
+-- DAX-R1: ORDERS, FULFILLMENT, RECONCILIATION
+-- ======================================================
+
+EVALUATE
+
+VAR Q1Dates =
+    DATESBETWEEN(
+        'dim_purchase_date'[date],
+        DATE(2018, 1, 1),
+        DATE(2018, 3, 31)
+    )
+
+VAR Q1Status =
+    TREATAS(
+        {"delivered"},
+        'dim_order_status'[order_status]
+    )
+
+RETURN
+UNION(
+    ROW(
+        "Cohort", "ALL",
+
+        "Total Orders", [Total Orders],
+        "Delivered Orders", [Delivered Orders],
+
+        "Evaluable Orders",
+            CALCULATE(
+                COUNTROWS('fact_orders'),
+                'fact_orders'[is_delivery_evaluable]
+                    = TRUE()
+            ),
+
+        "On-Time Orders",
+            CALCULATE(
+                COUNTROWS('fact_orders'),
+                'fact_orders'[is_delivered_on_time]
+                    = TRUE()
+            ),
+
+        "Late Orders",
+            CALCULATE(
+                COUNTROWS('fact_orders'),
+                'fact_orders'[is_delivered_late]
+                    = TRUE()
+            ),
+
+        "Average Delivery Days",
+            ROUND(
+                CALCULATE(
+                    AVERAGE(
+                        'fact_orders'[purchase_to_delivery_days]
+                    ),
+                    'fact_orders'[is_delivery_evaluable]
+                        = TRUE()
+                ),
+                2
+            ),
+
+        "Comparable Orders", [Comparable Orders],
+        "Matched Orders", [Matched Orders],
+        "Mismatched Orders", [Mismatched Orders],
+
+        "Financial Coverage Gaps",
+            [Financial Coverage Gaps (Dashboard)],
+
+        "Financial Match Pct",
+            ROUND(
+                [Financial Match Rate (Dashboard)] * 100,
+                2
+            ),
+
+        "Net Payment Difference",
+            ROUND(
+                [Net Comparable Payment Difference],
+                2
+            ),
+
+        "Absolute Discrepancy",
+            ROUND(
+                [Absolute Financial Discrepancy],
+                2
+            )
+    ),
+
+    ROW(
+        "Cohort", "Q1_2018_DELIVERED",
+
+        "Total Orders",
+            CALCULATE(
+                [Total Orders], Q1Dates, Q1Status
+            ),
+
+        "Delivered Orders",
+            CALCULATE(
+                [Delivered Orders], Q1Dates, Q1Status
+            ),
+
+        "Evaluable Orders",
+            CALCULATE(
+                COUNTROWS('fact_orders'),
+                Q1Dates, Q1Status,
+                'fact_orders'[is_delivery_evaluable]
+                    = TRUE()
+            ),
+
+        "On-Time Orders",
+            CALCULATE(
+                COUNTROWS('fact_orders'),
+                Q1Dates, Q1Status,
+                'fact_orders'[is_delivered_on_time]
+                    = TRUE()
+            ),
+
+        "Late Orders",
+            CALCULATE(
+                COUNTROWS('fact_orders'),
+                Q1Dates, Q1Status,
+                'fact_orders'[is_delivered_late]
+                    = TRUE()
+            ),
+
+        "Average Delivery Days",
+            ROUND(
+                CALCULATE(
+                    AVERAGE(
+                        'fact_orders'[purchase_to_delivery_days]
+                    ),
+                    Q1Dates, Q1Status,
+                    'fact_orders'[is_delivery_evaluable]
+                        = TRUE()
+                ),
+                2
+            ),
+
+        "Comparable Orders",
+            CALCULATE(
+                [Comparable Orders], Q1Dates, Q1Status
+            ),
+
+        "Matched Orders",
+            CALCULATE(
+                [Matched Orders], Q1Dates, Q1Status
+            ),
+
+        "Mismatched Orders",
+            CALCULATE(
+                [Mismatched Orders], Q1Dates, Q1Status
+            ),
+
+        "Financial Coverage Gaps",
+            CALCULATE(
+                [Financial Coverage Gaps (Dashboard)],
+                Q1Dates, Q1Status
+            ),
+
+        "Financial Match Pct",
+            ROUND(
+                CALCULATE(
+                    [Financial Match Rate (Dashboard)],
+                    Q1Dates, Q1Status
+                ) * 100,
+                2
+            ),
+
+        "Net Payment Difference",
+            ROUND(
+                CALCULATE(
+                    [Net Comparable Payment Difference],
+                    Q1Dates, Q1Status
+                ),
+                2
+            ),
+
+        "Absolute Discrepancy",
+            ROUND(
+                CALCULATE(
+                    [Absolute Financial Discrepancy],
+                    Q1Dates, Q1Status
+                ),
+                2
+            )
+    )
+);
+
+
+-- ======================================================
+-- DAX-R2: CUSTOMERS, REVIEWS, PRODUCTS, SELLERS
+-- ======================================================
+
+EVALUATE
+
+VAR Q1Dates =
+    DATESBETWEEN(
+        'dim_purchase_date'[date],
+        DATE(2018, 1, 1),
+        DATE(2018, 3, 31)
+    )
+
+VAR Q1Status =
+    TREATAS(
+        {"delivered"},
+        'dim_order_status'[order_status]
+    )
+
+RETURN
+UNION(
+    ROW(
+        "Cohort", "ALL",
+
+        "Customer Identities",
+            [Customer Identities With Orders],
+
+        "Repeat Share Pct",
+            ROUND(
+                [Repeat Customer Share (Dashboard)] * 100,
+                2
+            ),
+
+        "Review Records", [Review Records],
+
+        "Review Coverage Pct",
+            ROUND([Review Coverage Rate] * 100, 2),
+
+        "Average Review Score",
+            ROUND([Average Review Score], 2),
+
+        "High Rating Pct",
+            ROUND([High-Rating Review Share] * 100, 2),
+
+        "Written Feedback Pct",
+            ROUND(
+                [Written Feedback Availability Rate] * 100,
+                2
+            ),
+
+        "Item Entries", [Order Item Entries],
+        "Item Price", ROUND([Recorded Item Price], 2),
+        "Freight", ROUND([Recorded Freight Amount], 2),
+
+        "Active Products",
+            [Products With Item Records],
+
+        "Active Sellers",
+            [Sellers With Item Records],
+
+        "Multi-Order Seller Pct",
+            ROUND([Multi-Order Seller Share] * 100, 2),
+
+        "Top 10 Seller Pct",
+            ROUND(
+                [Top 10 Seller Item-Price Concentration] * 100,
+                2
+            )
+    ),
+
+    ROW(
+        "Cohort", "Q1_2018_DELIVERED",
+
+        "Customer Identities",
+            CALCULATE(
+                [Customer Identities With Orders],
+                Q1Dates, Q1Status
+            ),
+
+        "Repeat Share Pct",
+            ROUND(
+                CALCULATE(
+                    [Repeat Customer Share (Dashboard)],
+                    Q1Dates, Q1Status
+                ) * 100, 2
+            ),
+
+        "Review Records",
+            CALCULATE(
+                [Review Records], Q1Dates, Q1Status
+            ),
+
+        "Review Coverage Pct",
+            ROUND(
+                CALCULATE(
+                    [Review Coverage Rate],
+                    Q1Dates, Q1Status
+                ) * 100, 2
+            ),
+
+        "Average Review Score",
+            ROUND(
+                CALCULATE(
+                    [Average Review Score],
+                    Q1Dates, Q1Status
+                ), 2
+            ),
+
+        "High Rating Pct",
+            ROUND(
+                CALCULATE(
+                    [High-Rating Review Share],
+                    Q1Dates, Q1Status
+                ) * 100, 2
+            ),
+
+        "Written Feedback Pct",
+            ROUND(
+                CALCULATE(
+                    [Written Feedback Availability Rate],
+                    Q1Dates, Q1Status
+                ) * 100, 2
+            ),
+
+        "Item Entries",
+            CALCULATE(
+                [Order Item Entries], Q1Dates, Q1Status
+            ),
+
+        "Item Price",
+            ROUND(
+                CALCULATE(
+                    [Recorded Item Price],
+                    Q1Dates, Q1Status
+                ), 2
+            ),
+
+        "Freight",
+            ROUND(
+                CALCULATE(
+                    [Recorded Freight Amount],
+                    Q1Dates, Q1Status
+                ), 2
+            ),
+
+        "Active Products",
+            CALCULATE(
+                [Products With Item Records],
+                Q1Dates, Q1Status
+            ),
+
+        "Active Sellers",
+            CALCULATE(
+                [Sellers With Item Records],
+                Q1Dates, Q1Status
+            ),
+
+        "Multi-Order Seller Pct",
+            ROUND(
+                CALCULATE(
+                    [Multi-Order Seller Share],
+                    Q1Dates, Q1Status
+                ) * 100, 2
+            ),
+
+        "Top 10 Seller Pct",
+            ROUND(
+                CALCULATE(
+                    [Top 10 Seller Item-Price Concentration],
+                    Q1Dates, Q1Status
+                ) * 100, 2
+            )
+    )
+);
+
+
+-- ======================================================
+-- DAX-R3: CROSS-FACT FINANCIAL AND GEO COVERAGE
+-- ======================================================
+
+EVALUATE
+
+VAR Q1Dates =
+    DATESBETWEEN(
+        'dim_purchase_date'[date],
+        DATE(2018, 1, 1),
+        DATE(2018, 3, 31)
+    )
+
+VAR Q1Status =
+    TREATAS(
+        {"delivered"},
+        'dim_order_status'[order_status]
+    )
+
+RETURN
+UNION(
+    ROW(
+        "Cohort", "ALL",
+
+        "Item Plus Freight",
+            ROUND(
+                SUM('fact_order_items'[item_total_amount]),
+                2
+            ),
+
+        "Recorded Payment Volume",
+            ROUND(
+                SUM('fact_payments'[payment_amount]),
+                2
+            ),
+
+        "Payment Entries", [Payment Entries],
+
+        "Total Orders", [Total Orders],
+        "Map-Ready Orders", [Map-Ready Orders],
+
+        "Missing Geo Orders",
+            [Orders Without Geo Reference],
+
+        "Flagged Geo Orders",
+            [Orders With Flagged Customer Coordinates],
+
+        "Map-Ready Order Pct",
+            ROUND([Map-Ready Order Share] * 100, 2),
+
+        "Map-Ready Items", [Map-Ready Item Entries],
+        "Map-Ready Payments", [Map-Ready Payment Entries],
+        "Map-Ready Reviews", [Map-Ready Review Records],
+
+        "Map-Ready Sellers", [Map-Ready Sellers]
+    ),
+
+    ROW(
+        "Cohort", "Q1_2018_DELIVERED",
+
+        "Item Plus Freight",
+            ROUND(
+                CALCULATE(
+                    SUM('fact_order_items'[item_total_amount]),
+                    Q1Dates, Q1Status
+                ), 2
+            ),
+
+        "Recorded Payment Volume",
+            ROUND(
+                CALCULATE(
+                    SUM('fact_payments'[payment_amount]),
+                    Q1Dates, Q1Status
+                ), 2
+            ),
+
+        "Payment Entries",
+            CALCULATE(
+                [Payment Entries], Q1Dates, Q1Status
+            ),
+
+        "Total Orders",
+            CALCULATE(
+                [Total Orders], Q1Dates, Q1Status
+            ),
+
+        "Map-Ready Orders",
+            CALCULATE(
+                [Map-Ready Orders], Q1Dates, Q1Status
+            ),
+
+        "Missing Geo Orders",
+            CALCULATE(
+                [Orders Without Geo Reference],
+                Q1Dates, Q1Status
+            ),
+
+        "Flagged Geo Orders",
+            CALCULATE(
+                [Orders With Flagged Customer Coordinates],
+                Q1Dates, Q1Status
+            ),
+
+        "Map-Ready Order Pct",
+            ROUND(
+                CALCULATE(
+                    [Map-Ready Order Share],
+                    Q1Dates, Q1Status
+                ) * 100, 2
+            ),
+
+        "Map-Ready Items",
+            CALCULATE(
+                [Map-Ready Item Entries],
+                Q1Dates, Q1Status
+            ),
+
+        "Map-Ready Payments",
+            CALCULATE(
+                [Map-Ready Payment Entries],
+                Q1Dates, Q1Status
+            ),
+
+        "Map-Ready Reviews",
+            CALCULATE(
+                [Map-Ready Review Records],
+                Q1Dates, Q1Status
+            ),
+
+        "Map-Ready Sellers", [Map-Ready Sellers]
+    )
+);
+
+-- ======================================================
+-- END OF FILE
+-- ======================================================

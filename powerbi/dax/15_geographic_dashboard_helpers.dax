@@ -1,0 +1,361 @@
+
+-- ======================================================
+-- PROJECT: Order-to-Cash Intelligence Platform
+-- STEP: 7.4 Task 6
+-- PAGE: 06 Geographic Coverage & Data Quality
+-- FILE: 15_geographic_dashboard_helpers.dax
+-- ======================================================
+
+-- This file is a version-controlled DAX reference.
+-- Do not execute all definitions as one query.
+--
+-- MEASURES: Create separately under _Measures.
+-- COLUMNS: Create separately in dim_customer_geography.
+-- TABLE: Create using Modeling > New table.
+--
+-- The geographic dashboard uses a customer-state
+-- ranking bar chart. It does NOT require Azure Maps,
+-- Power BI Service or a university account.
+
+
+-- ======================================================
+-- SECTION 1: GEOGRAPHIC HELPER MEASURES
+-- ======================================================
+
+-- MEASURE 1
+-- Format: Whole number, 0 decimals.
+-- ALL: 99,163.
+-- Q1 delivered: 20,568.
+
+Geo Referenced Orders (Dashboard) =
+COALESCE(
+    CALCULATE(
+        [Total Orders],
+        KEEPFILTERS(
+            'dim_customer_geography'[has_geo_reference]
+                = TRUE()
+        )
+    ),
+    0
+)
+
+
+-- MEASURE 2
+-- Format: Percentage, 2 decimals.
+
+Map-Ready Item Share (Dashboard) =
+DIVIDE(
+    [Map-Ready Item Entries],
+    [Order Item Entries]
+)
+
+
+-- MEASURE 3
+-- Format: Percentage, 2 decimals.
+
+Map-Ready Payment Share (Dashboard) =
+DIVIDE(
+    [Map-Ready Payment Entries],
+    [Payment Entries]
+)
+
+
+-- MEASURE 4
+-- Format: Percentage, 2 decimals.
+
+Map-Ready Review Share (Dashboard) =
+DIVIDE(
+    [Map-Ready Review Records],
+    [Review Records]
+)
+
+
+-- ======================================================
+-- SECTION 2: CALCULATED COLUMNS
+-- TABLE: dim_customer_geography
+-- ======================================================
+
+-- COLUMN 1
+
+Geographic Quality Category =
+SWITCH(
+    TRUE(),
+    'dim_customer_geography'[has_geo_reference]
+        <> TRUE(),
+        "Missing ZIP Reference",
+
+    'dim_customer_geography'[is_reference_coordinate_outlier]
+        = TRUE(),
+        "Flagged Coordinate",
+
+    'dim_customer_geography'[has_map_ready_coordinate]
+        = TRUE(),
+        "Map-Ready",
+
+    "Other / Inspect"
+)
+
+
+-- COLUMN 2
+
+Geographic Quality Sort =
+SWITCH(
+    TRUE(),
+    'dim_customer_geography'[has_geo_reference]
+        <> TRUE(), 1,
+
+    'dim_customer_geography'[is_reference_coordinate_outlier]
+        = TRUE(), 2,
+
+    'dim_customer_geography'[has_map_ready_coordinate]
+        = TRUE(), 3,
+
+    4
+)
+
+
+-- Sort Geographic Quality Category by
+-- Geographic Quality Sort in Column tools.
+
+
+-- ======================================================
+-- SECTION 3: DISCONNECTED PRESENTATION TABLE
+-- ======================================================
+
+Geo Fact Type =
+DATATABLE(
+    "Fact", STRING,
+    "Sort", INTEGER,
+    {
+        {"Orders", 1},
+        {"Order Items", 2},
+        {"Payments", 3},
+        {"Reviews", 4}
+    }
+)
+
+
+-- Expected: 4 rows, 2 columns.
+-- No relationships.
+-- Sort Fact by Sort.
+
+
+-- ======================================================
+-- SECTION 4: FACT COMPARISON MEASURES
+-- ======================================================
+
+-- MEASURE 5
+-- Format: Percentage, 2 decimals.
+
+Map-Ready Share by Fact (Dashboard) =
+SWITCH(
+    SELECTEDVALUE('Geo Fact Type'[Fact]),
+    "Orders", [Map-Ready Order Share],
+    "Order Items", [Map-Ready Item Share (Dashboard)],
+    "Payments", [Map-Ready Payment Share (Dashboard)],
+    "Reviews", [Map-Ready Review Share (Dashboard)],
+    BLANK()
+)
+
+
+-- MEASURE 6
+-- Format: Whole number, 0 decimals.
+
+Map-Ready Records by Fact (Dashboard) =
+SWITCH(
+    SELECTEDVALUE('Geo Fact Type'[Fact]),
+    "Orders", [Map-Ready Orders],
+    "Order Items", [Map-Ready Item Entries],
+    "Payments", [Map-Ready Payment Entries],
+    "Reviews", [Map-Ready Review Records],
+    BLANK()
+)
+
+
+-- MEASURE 7
+-- Format: Whole number, 0 decimals.
+
+Total Records by Fact (Dashboard) =
+SWITCH(
+    SELECTEDVALUE('Geo Fact Type'[Fact]),
+    "Orders", [Total Orders],
+    "Order Items", [Order Item Entries],
+    "Payments", [Payment Entries],
+    "Reviews", [Review Records],
+    BLANK()
+)
+
+
+-- ======================================================
+-- SECTION 5: EXISTING MEASURES REUSED
+-- ======================================================
+
+-- [Total Orders]
+-- [Map-Ready Orders]
+-- [Map-Ready Order Share]
+-- [Orders Without Geo Reference]
+-- [Orders With Flagged Customer Coordinates]
+-- [Map-Ready Sellers]
+-- [Order Item Entries]
+-- [Map-Ready Item Entries]
+-- [Payment Entries]
+-- [Map-Ready Payment Entries]
+-- [Review Records]
+-- [Map-Ready Review Records]
+--
+-- These were created and validated in Step 7.3.
+-- Do not recreate them.
+
+
+-- ======================================================
+-- SECTION 6: FULL-DATASET BASELINES
+-- ======================================================
+
+-- ORDERS
+-- Total:                         99,441
+-- Geo referenced:                99,163
+-- Map-ready:                     99,162
+-- Without geographic reference:    278
+-- Flagged coordinates:                1
+-- Map-ready order share:         99.72%
+
+-- ORDER ITEMS
+-- Total:                        112,650
+-- Map-ready:                    112,347
+-- Map-ready share:               99.73%
+
+-- PAYMENTS
+-- Total:                        103,886
+-- Map-ready:                    103,598
+-- Map-ready share:               99.72%
+
+-- REVIEWS
+-- Total:                         99,224
+-- Map-ready:                     98,944
+-- Map-ready share:               99.72%
+
+-- CUSTOMER GEOGRAPHY DIMENSION
+-- Rows:                          15,034
+-- Map-ready reference locations: 14,876
+
+-- SELLER DIMENSION
+-- Sellers:                        3,095
+-- Map-ready sellers:              3,088
+
+
+-- ======================================================
+-- SECTION 7: Q1 2018 DELIVERED PURCHASE COHORT
+-- ======================================================
+
+-- Date range: 2018-01-01 through 2018-03-31.
+-- Order status: delivered.
+
+-- ORDERS
+-- Total:                         20,627
+-- Geo referenced:                20,568
+-- Map-ready:                     20,568
+-- Without reference:                 59
+-- Flagged coordinates:                0
+-- Map-ready order share:         99.71%
+
+-- ORDER ITEMS
+-- Total:                         23,572
+-- Map-ready:                     23,510
+-- Map-ready share:               99.74%
+
+-- PAYMENTS
+-- Total:                         21,424
+-- Map-ready:                     21,362
+-- Map-ready share:               99.71%
+
+-- REVIEWS
+-- Total:                         20,630
+-- Map-ready:                     20,572
+-- Map-ready share:               99.72%
+
+-- Map-ready sellers: 3,088.
+-- Dimension-level value, not purchase-cohort value.
+
+
+-- ======================================================
+-- SECTION 8: GEOGRAPHIC VISUAL DESIGN
+-- ======================================================
+
+-- VISUAL 1:
+-- Top 10 Customer States by Map-Ready Orders.
+--
+-- Category:
+-- dim_customer_geography[customer_state]
+-- Value:
+-- [Map-Ready Orders]
+-- Visual-level filter:
+-- Top 10 by [Map-Ready Orders]
+-- Sort descending.
+--
+-- State rankings are established through DAX G5
+-- and independent PostgreSQL SQL-2.
+-- Do not hardcode assumed state values.
+
+-- VISUAL 2:
+-- Map-Ready Order Share by Purchase Month.
+-- dim_purchase_date[Purchase Month Label]
+-- [Map-Ready Order Share]
+
+-- VISUAL 3:
+-- Map-Ready Coverage by Fact.
+-- Geo Fact Type[Fact]
+-- [Map-Ready Share by Fact (Dashboard)]
+
+-- VISUAL 4:
+-- Order Geographic Exceptions.
+-- dim_customer_geography[Geographic Quality Category]
+-- [Total Orders]
+-- Visual-only filter:
+-- Missing ZIP Reference and Flagged Coordinate.
+
+
+-- ======================================================
+-- SECTION 9: BUSINESS SAFEGUARDS
+-- ======================================================
+
+-- 1. Customer geography is based on geographic
+--    reference matching for customer ZIP prefixes.
+-- 2. The state chart uses customer-state attributes.
+-- 3. It is not a map of exact customer addresses.
+-- 4. Map-ready means eligible geographic references.
+-- 5. Flagged coordinates remain visible as exceptions.
+-- 6. Orders, Items, Payments and Reviews have
+--    different record grains.
+-- 7. Their completeness percentages use their
+--    corresponding fact-record denominators.
+-- 8. Purchase Date defines the order-purchase cohort.
+-- 9. Seller dimension measures do not automatically
+--    respond to order Purchase Date or Status.
+-- 10. Geo Fact Type remains disconnected.
+-- 11. The state ranking chart does not need
+--    Azure Maps or any Power BI cloud service.
+-- 12. Do not remove source records during reporting.
+
+
+-- ======================================================
+-- SECTION 10: VALIDATION REFERENCES
+-- ======================================================
+
+-- DAX:
+-- G1: Full and Q1 geographic baselines
+-- G2: Geographic population partitions
+-- G3: Geographic coverage by fact
+-- G4: Monthly geographic totals
+-- G5: Top 10 customer states
+
+-- PostgreSQL:
+-- sql/47_powerbi_geographic_dashboard_validation.sql
+
+-- QA:
+-- docs/powerbi_dashboard_06_geographic_quality_qa.md
+
+-- Sign-off: PENDING final checks.
+
+-- ======================================================
+-- END OF FILE
+-- ======================================================

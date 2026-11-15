@@ -1,0 +1,85 @@
+
+-- =====================================================
+-- PROJECT: Order-to-Cash Intelligence Platform
+-- STEP: 7.4 Task 3
+-- FILE: 12_financial_dashboard_support_measures.dax
+-- PAGE: 03 Financial Reconciliation
+-- =====================================================
+
+-- Each measure is created separately in Power BI.
+-- This file is a version-controlled DAX reference.
+
+
+-- MEASURE 1
+-- Financially matched orders / comparable orders.
+-- Format: Percentage, 2 decimals.
+
+Financial Match Rate (Dashboard) =
+DIVIDE(
+    [Matched Orders],
+    [Comparable Orders]
+)
+
+
+-- MEASURE 2
+-- Orders without both sides of financial comparison.
+-- Format: Whole number, 0 decimals.
+
+Financial Coverage Gaps (Dashboard) =
+COALESCE(
+    [Total Orders] - [Comparable Orders],
+    0
+)
+
+
+-- =====================================================
+-- FULL-DATASET VALIDATION
+-- =====================================================
+
+-- Total Orders: 99,441
+-- Comparable Orders: 98,665
+-- Matched Orders: 98,089
+-- Mismatched Orders: 576
+-- Financial Match Rate: 99.42%
+-- Financial Coverage Gaps: 776
+
+-- 98,089 + 576 = 98,665
+-- 99,441 - 98,665 = 776
+
+
+-- =====================================================
+-- Q1 2018 DELIVERED-ORDER COHORT
+-- =====================================================
+
+-- Comparable Orders: 20,627
+-- Matched Orders: 20,499
+-- Mismatched Orders: 128
+-- Financial Match Rate: 99.38%
+-- Financial Coverage Gaps: 0
+
+
+-- =====================================================
+-- BUSINESS DEFINITIONS
+-- =====================================================
+
+-- Comparable orders have both item+freight
+-- and recorded payment values.
+
+-- Financial Match Rate excludes missing
+-- financial coverage from its denominator.
+
+-- Financial Coverage Gaps reports source-record
+-- incompleteness, not proven unpaid orders.
+
+-- Positive net payment difference means recorded
+-- payments exceed recorded item+freight value.
+
+-- Absolute discrepancy sums order-level absolute
+-- differences; it is not ABS of the net difference.
+
+-- All monetary values are BRL.
+-- All percentages use filtered populations.
+
+-- =====================================================
+-- END OF FILE
+-- =====================================================

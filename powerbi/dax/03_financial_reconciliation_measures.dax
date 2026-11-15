@@ -1,0 +1,26 @@
+
+-- =====================================================
+-- PROJECT: Order-to-Cash Intelligence Platform
+-- STEP 7.3 - TASK 3
+-- FILE: 03_financial_reconciliation_measures.dax
+-- PURPOSE: Financial reconciliation KPIs
+-- =====================================================
+
+-- VERIFIED FULL-DATASET BASELINES
+-- Comparable Orders: 98,665
+-- Matched Orders: 98,089
+-- Mismatched Orders: 576
+-- Missing Items: 775
+-- Missing Payments: 1
+-- Financial Match Rate: 99.42%
+--
+-- Comparable Item + Freight: R$15,843,409.78
+-- Comparable Recorded Payments: R$15,846,280.17
+-- Net Payment Difference: +R$2,870.39
+-- Absolute Discrepancy: R$3,271.95
+--
+-- Source amounts are not recognized revenue,
+-- confirmed settlement amounts, or financial losses.
+--
+-- Measures are created separately in Power BI.
+-- This file is a version-controlled reference.

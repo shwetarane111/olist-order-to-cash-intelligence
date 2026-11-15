@@ -1,0 +1,362 @@
+
+-- =====================================================
+-- PROJECT: Order-to-Cash Intelligence Platform
+-- STEP 7.3 - TASK 7
+-- FILE: 07_product_seller_catalog_measures.dax
+-- PURPOSE: Product, Seller, Item and Catalog KPIs
+-- SOURCE: PostgreSQL analytics schema
+-- =====================================================
+
+-- IMPORTANT
+-- Each definition below is created as a separate
+-- measure under _Measures in Power BI Desktop.
+-- This .dax file is a version-controlled reference.
+-- It is not a standalone executable DAX query.
+
+
+-- =====================================================
+-- SECTION 1: PRODUCT AND SELLER ACTIVITY
+-- =====================================================
+
+-- MEASURE 1: Order Item Entries
+-- Full-dataset baseline: 112,650
+-- Grain: One order-item entry
+
+Order Item Entries =
+COALESCE(
+    COUNTROWS('fact_order_items'),
+    0
+)
+
+
+-- MEASURE 2: Orders With Item Records
+-- Full-dataset baseline: 98,666
+-- Counts distinct orders represented in the Item fact.
+
+Orders With Item Records =
+COALESCE(
+    DISTINCTCOUNT('fact_order_items'[order_id]),
+    0
+)
+
+
+-- MEASURE 3: Products With Item Records
+-- Reported full-dataset baseline: 32,951
+-- Counts distinct products represented in the Item fact.
+
+Products With Item Records =
+COALESCE(
+    DISTINCTCOUNT('fact_order_items'[product_id]),
+    0
+)
+
+
+-- MEASURE 4: Sellers With Item Records
+-- Reported full-dataset baseline: 3,095
+-- Counts distinct sellers represented in the Item fact.
+
+Sellers With Item Records =
+COALESCE(
+    DISTINCTCOUNT('fact_order_items'[seller_id]),
+    0
+)
+
+
+-- =====================================================
+-- SECTION 2: ITEM AND FREIGHT VALUE
+-- =====================================================
+
+-- MEASURE 5: Recorded Item Price
+-- Full-dataset baseline: R$13,591,643.70
+-- Sum of recorded item prices, excluding freight.
+
+Recorded Item Price =
+SUM('fact_order_items'[item_price])
+
+
+-- MEASURE 6: Recorded Freight Amount
+-- Full-dataset baseline: R$2,251,909.54
+
+Recorded Freight Amount =
+SUM('fact_order_items'[freight_amount])
+
+
+-- MEASURE 7: Average Item Price per Entry
+-- Full-dataset baseline: R$120.65
+-- Denominator: Order Item Entries
+
+Average Item Price per Entry =
+DIVIDE(
+    [Recorded Item Price],
+    [Order Item Entries]
+)
+
+
+-- MEASURE 8: Average Freight per Item Entry
+-- Full-dataset baseline: R$19.99
+-- Denominator: Order Item Entries
+
+Average Freight per Item Entry =
+DIVIDE(
+    [Recorded Freight Amount],
+    [Order Item Entries]
+)
+
+
+-- MEASURE 9: Freight Share of Item and Freight Value
+-- Full-dataset baseline: 14.21%
+-- Denominator: Recorded item prices plus freight
+
+Freight Share of Item and Freight Value =
+DIVIDE(
+    [Recorded Freight Amount],
+    [Recorded Item and Freight Value]
+)
+
+
+-- =====================================================
+-- SECTION 3: MULTIPLE-ITEM ORDER ACTIVITY
+-- =====================================================
+
+-- MEASURE 10: Orders With Multiple Item Entries
+-- Reported full-dataset baseline: 9,803
+-- Counts orders with more than one visible item entry.
+
+Orders With Multiple Item Entries =
+COALESCE(
+    COUNTROWS(
+        FILTER(
+            VALUES('fact_order_items'[order_id]),
+            CALCULATE([Order Item Entries]) > 1
+        )
+    ),
+    0
+)
+
+
+-- MEASURE 11: Maximum Item Entries Per Order
+-- Reported full-dataset baseline: 21
+
+Maximum Item Entries Per Order =
+COALESCE(
+    MAXX(
+        VALUES('fact_order_items'[order_id]),
+        CALCULATE([Order Item Entries])
+    ),
+    0
+)
+
+
+-- =====================================================
+-- SECTION 4: PRODUCT CATALOG QUALITY
+-- =====================================================
+
+-- MEASURE 12: Translated Catalog Products
+-- Full-dataset baseline: 32,328
+
+Translated Catalog Products =
+COALESCE(
+    CALCULATE(
+        COUNTROWS('dim_product'),
+        KEEPFILTERS(
+            'dim_product'[category_status] = "TRANSLATED"
+        )
+    ),
+    0
+)
+
+
+-- MEASURE 13: Untranslated Catalog Products
+-- Full-dataset baseline: 13
+
+Untranslated Catalog Products =
+COALESCE(
+    CALCULATE(
+        COUNTROWS('dim_product'),
+        KEEPFILTERS(
+            'dim_product'[category_status] = "UNTRANSLATED"
+        )
+    ),
+    0
+)
+
+
+-- MEASURE 14: Missing-Category Catalog Products
+-- Full-dataset baseline: 610
+
+Missing-Category Catalog Products =
+COALESCE(
+    CALCULATE(
+        COUNTROWS('dim_product'),
+        KEEPFILTERS(
+            'dim_product'[category_status]
+                = "MISSING_SOURCE_CATEGORY"
+        )
+    ),
+    0
+)
+
+
+-- MEASURE 15: Catalog Products Missing Physical Attributes
+-- Full-dataset baseline: 2
+
+Catalog Products Missing Physical Attributes =
+COALESCE(
+    CALCULATE(
+        COUNTROWS('dim_product'),
+        KEEPFILTERS(
+            'dim_product'[has_missing_physical_attributes]
+                = TRUE()
+        )
+    ),
+    0
+)
+
+
+-- MEASURE 16: Zero-Weight Catalog Products
+-- Full-dataset baseline: 4
+
+Zero-Weight Catalog Products =
+COALESCE(
+    CALCULATE(
+        COUNTROWS('dim_product'),
+        KEEPFILTERS(
+            'dim_product'[is_zero_weight] = TRUE()
+        )
+    ),
+    0
+)
+
+
+-- =====================================================
+-- SECTION 5: FULL-DATASET VALIDATION BASELINES
+-- =====================================================
+
+-- ITEM AND SELLER ACTIVITY
+-- Order Item Entries: 112,650
+-- Orders With Item Records: 98,666
+-- Products With Item Records: 32,951
+-- Sellers With Item Records: 3,095
+-- Orders With Multiple Item Entries: 9,803
+-- Maximum Item Entries Per Order: 21
+
+-- ITEM AND FREIGHT VALUES
+-- Recorded Item Price: R$13,591,643.70
+-- Recorded Freight Amount: R$2,251,909.54
+-- Recorded Item and Freight Value: R$15,843,553.24
+-- Average Item Price per Entry: R$120.65
+-- Average Freight per Item Entry: R$19.99
+-- Freight Share: 14.21%
+
+-- CATALOG QUALITY
+-- Total Catalog Products: 32,951
+-- Translated Catalog Products: 32,328
+-- Untranslated Catalog Products: 13
+-- Missing-Category Catalog Products: 610
+-- Catalog Products Missing Physical Attributes: 2
+-- Zero-Weight Catalog Products: 4
+
+
+-- =====================================================
+-- SECTION 6: MATHEMATICAL CONSISTENCY
+-- =====================================================
+
+-- Item Price + Freight = Item and Freight Value
+-- 13,591,643.70 + 2,251,909.54 = 15,843,553.24
+
+-- Orders without item records: 775
+-- 99,441 - 98,666 = 775
+
+-- Extra item entries beyond first per represented order:
+-- 112,650 - 98,666 = 13,984
+
+-- IMPORTANT
+-- Extra item entries (13,984) and orders with
+-- multiple item entries (9,803) are different metrics.
+
+-- Catalog classification partition:
+-- 32,328 + 13 + 610 = 32,951
+
+
+-- =====================================================
+-- SECTION 7: PRODUCT AND SELLER FILTERING
+-- =====================================================
+
+-- Previously validated highest-frequency product:
+-- Item Entries: 527
+
+-- Previously validated highest-frequency seller:
+-- Item Entries: 2,033
+
+-- Product dimension filtering difference: 0
+-- Seller dimension filtering difference: 0
+
+-- Product filtering must not automatically change
+-- the fact_orders population.
+
+-- Seller filtering must not automatically allocate
+-- order-level payment values to individual sellers.
+
+-- Total Orders without Product filtering: 99,441
+-- Recorded Payment Volume: R$16,008,872.12
+
+
+-- =====================================================
+-- SECTION 8: Q1 2018 DELIVERED-ORDER COHORT
+-- =====================================================
+
+-- Cohort definition:
+-- Purchase Date: 2018-01-01 through 2018-03-31
+-- Order Status: delivered
+
+-- Previously verified:
+-- Delivered Orders: 20,627
+-- Orders With Item Records: 20,627
+-- Recorded Item and Freight Value: R$3,164,654.11
+
+-- ADD REMAINING Q1 VALUES AFTER SQL/DAX RECONCILIATION:
+-- Q1 Item Entries: PENDING
+-- Q1 Products With Item Records: PENDING
+-- Q1 Sellers With Item Records: PENDING
+-- Q1 Recorded Item Price: PENDING
+-- Q1 Recorded Freight Amount: PENDING
+-- Q1 Average Item Price per Entry: PENDING
+-- Q1 Average Freight per Item Entry: PENDING
+-- Q1 Freight Share: PENDING
+-- Q1 Orders With Multiple Item Entries: PENDING
+-- Q1 Maximum Item Entries Per Order: PENDING
+
+
+-- =====================================================
+-- SECTION 9: BUSINESS DEFINITIONS AND LIMITATIONS
+-- =====================================================
+
+-- 1. Item value is based on recorded source item prices.
+--    It is not necessarily recognized revenue.
+
+-- 2. Freight amount represents recorded freight charges.
+--    It is not necessarily actual carrier cost.
+
+-- 3. Item and Freight Value must not automatically
+--    be treated as Recorded Payment Volume.
+
+-- 4. Product and Seller measures use fact_order_items.
+--    Their filter behavior follows the Item fact.
+
+-- 5. Product/Seller dimensions do not directly
+--    filter fact_orders or fact_payments.
+
+-- 6. Multiple-item statistics are based on visible
+--    item records within the current filter context.
+
+-- 7. Catalog quality measures describe dim_product.
+--    They do not necessarily change under Purchase Date
+--    filters because Product does not receive filters
+--    back from the Item fact.
+
+-- 8. All source-quality exceptions remain preserved.
+--    No records were removed for reporting convenience.
+
+-- =====================================================
+-- END OF FILE
+-- =====================================================

@@ -1,0 +1,139 @@
+
+-- =====================================================
+-- PROJECT: Order-to-Cash Intelligence Platform
+-- STEP: 7.4 Task 5
+-- PAGE: 05 Product and Seller Performance
+-- FILE: 14_product_seller_dashboard_helpers.dax
+-- =====================================================
+
+-- MEASURE: Create under _Measures > New measure.
+
+Top 10 Seller Item Price (Dashboard) =
+VAR SellerPriceTable =
+    CALCULATETABLE(
+        ADDCOLUMNS(
+            VALUES('dim_seller'[seller_id]),
+            "@ItemPrice",
+                COALESCE(
+                    CALCULATE([Recorded Item Price]),
+                    0
+                )
+        ),
+        REMOVEFILTERS('dim_seller')
+    )
+
+VAR TopTenSellers =
+    TOPN(
+        10,
+        SellerPriceTable,
+        [@ItemPrice], DESC,
+        'dim_seller'[seller_id], ASC
+    )
+
+RETURN
+    COALESCE(
+        SUMX(TopTenSellers, [@ItemPrice]),
+        0
+    )
+
+
+-- OPTIONAL CALCULATED COLUMN:
+-- Create under dim_seller > New column.
+
+Seller Display ID =
+LEFT(
+    'dim_seller'[seller_id],
+    8
+)
+& "..."
+& RIGHT(
+    'dim_seller'[seller_id],
+    4
+)
+
+
+-- =====================================================
+-- EXISTING MEASURE DEPENDENCIES
+-- =====================================================
+
+-- [Order Item Entries]
+-- [Recorded Item Price]
+-- [Recorded Freight Amount]
+-- [Recorded Item and Freight Value]
+-- [Products With Item Records]
+-- [Sellers With Item Records]
+-- [Seller-Order Associations]
+-- [Sellers With Multiple Distinct Orders]
+-- [Multi-Order Seller Share]
+-- [Top 10 Seller Item-Price Concentration]
+-- [Product Category Item-Price Share]
+
+-- Do not recreate these validated measures.
+
+
+-- =====================================================
+-- VERIFIED BASELINES
+-- =====================================================
+
+-- FULL DATASET
+-- Item Entries: 112,650
+-- Recorded Item Price: R$13,591,643.70
+-- Freight: R$2,251,909.54
+-- Products With Items: 32,951
+-- Active Sellers: 3,095
+-- Seller-Order Associations: 100,010
+-- Multi-Order Sellers: 2,524
+-- Multi-Order Seller Share: 81.55%
+-- Top 10 Seller Item Price: R$1,787,241.74
+-- Top 10 Seller Concentration: 13.15%
+
+-- Q1 2018 DELIVERED PURCHASE COHORT
+-- Item Entries: 23,572
+-- Recorded Item Price: R$2,704,438.38
+-- Active Sellers: 1,351
+-- Seller-Order Associations: 20,885
+-- Multi-Order Sellers: 1,064
+-- Multi-Order Seller Share: 78.76%
+-- Top 10 Seller Item Price: R$393,589.46
+-- Top 10 Seller Concentration: 14.55%
+-- Active Products: verify with PostgreSQL.
+
+
+-- =====================================================
+-- BUSINESS SAFEGUARDS
+-- =====================================================
+
+-- Item prices exclude freight.
+-- Item-price totals are not recognized revenue.
+
+-- Active products and sellers are defined by
+-- participation in the filtered Order Items fact.
+
+-- Seller-order associations are distinct pairs,
+-- not distinct marketplace orders.
+
+-- Multi-order seller status is recalculated within
+-- the selected purchase cohort.
+
+-- Top 10 concentration removes Seller dimension
+-- filters for the benchmark while preserving
+-- applicable non-seller filters.
+
+-- Seller Display ID is a presentation label only.
+-- seller_id remains the canonical identifier.
+
+-- =====================================================
+-- VALIDATION REFERENCES
+-- =====================================================
+
+-- SQL:
+-- sql/46_powerbi_product_seller_dashboard_validation.sql
+
+-- QA:
+-- docs/powerbi_dashboard_05_product_seller_qa.md
+
+-- Status: PENDING final Page 05 checks.
+
+-- =====================================================
+-- END OF FILE
+-- =====================================================

@@ -1,0 +1,26 @@
+
+-- =====================================================
+-- CUSTOMER KPI VALIDATION
+-- =====================================================
+-- Full historical identities: 96,096
+-- Single-order identities: 93,099
+-- Repeat-order identities: 2,997
+-- Repeat-order share: 3.12%
+-- Orders beyond first: 3,345
+-- Orders from repeat-order identities: 6,342
+-- Average orders per identity: 1.0348
+-- Maximum orders per identity: 17
+--
+-- Q1 2018 delivered-cohort results:
+-- Add verified Power BI/PostgreSQL results here.
+--
+-- IMPORTANT DEFINITIONS:
+-- Repeat means 2+ orders within the current
+-- selection, not necessarily the customer's
+-- full historical lifetime.
+--
+-- These are order-activity measures, not
+-- customer retention or lifetime value measures.
+--
+-- Product/Seller dimensions do not automatically
+-- filter fact_orders in the approved model.

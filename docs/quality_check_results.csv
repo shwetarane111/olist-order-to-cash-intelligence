@@ -1,0 +1,27 @@
+check,status,details
+Orders primary key,PASS,99441 orders checked
+Order Items composite key,PASS,112650 item records checked
+Payments composite key,PASS,103886 payment records checked
+Order Items foreign key,PASS,0 unmatched item records
+Payments foreign key,PASS,0 unmatched payment records
+Customers primary key,PASS,99441 customer records checked
+Orders customer foreign key,PASS,0 orders with unmatched customers
+Products primary key,PASS,32951 product records checked
+Order Items product foreign key,PASS,0 item rows with unmatched products
+Sellers primary key,PASS,3095 seller records checked
+Order Items seller foreign key,PASS,0 item rows with unmatched sellers; 0 missing seller IDs
+Reviews composite key,PASS,99224 review records checked; 0 missing keys; 0 duplicate composite keys
+Reviews order foreign key,PASS,0 reviews with unmatched orders
+Translation category primary key,PASS,71 translation records checked; 0 missing/blank keys; 0 duplicate keys
+English translation completeness,PASS,0 missing/blank English labels
+Product category translation coverage,INFO,2 untranslated categories; 13 products affected; 610 products with no source category
+Geolocation required-field completeness,PASS,0 rows with missing required fields
+Geolocation ZIP/state format,PASS,0 invalid ZIP formats; 0 invalid state formats
+Geolocation coordinate validity,PASS,0 invalid coordinate rows
+Geolocation duplicates and outliers,INFO,261831 exact duplicate rows; 29 coordinate outlier candidates
+Geolocation ZIP coverage,INFO,157 unmatched customer ZIP prefixes; 7 unmatched seller ZIP prefixes
+Payment amount validity,PASS,0 invalid or negative payment amounts
+Payment installment validity,PASS,0 invalid installment values
+Payment business-quality exceptions,INFO,9 zero-value payment records; 2 zero-installment records; 3 undefined payment methods
+Orders without item records,INFO,775 orders require investigation
+Orders without payment records,INFO,1 orders require investigation

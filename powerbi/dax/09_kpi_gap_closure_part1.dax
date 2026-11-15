@@ -1,0 +1,253 @@
+
+-- =====================================================
+-- PROJECT: Order-to-Cash Intelligence Platform
+-- FILE: 09_kpi_gap_closure_part1.dax
+-- STEP 7.3 - TASK 10
+-- PURPOSE: Close nine business KPI coverage gaps
+-- SOURCE: analytics.fact_orders and analytics.fact_order_reviews
+-- =====================================================
+
+-- FILE USAGE
+-- Each formula is created INDIVIDUALLY using New measure
+-- under _Measures in Power BI Desktop.
+-- This .dax file is a version-controlled reference, not
+-- a single executable DAX query.
+
+-- =====================================================
+-- SECTION 1: ALL TEN MEASURE DEFINITIONS
+-- =====================================================
+
+-- MEASURE 1 | KPI-003: Orders With Items
+-- Order fact records with at least one item record.
+-- Full-data baseline: 98,666.
+
+Orders With Items (Order Fact) =
+COALESCE(
+    CALCULATE(
+        [Total Orders],
+        KEEPFILTERS(
+            'fact_orders'[has_item_records] = TRUE()
+        )
+    ),
+    0
+)
+
+
+-- MEASURE 2 | KPI-011: Delivered Order AOV: Item + Freight
+-- Delivered and item-backed orders only.
+-- Full-data value checked in PostgreSQL; exact value
+-- was not supplied in this conversation.
+-- Q1 2018 delivered cohort: R$153.42.
+
+Delivered Order AOV - Item and Freight =
+VAR EligibleValue =
+    CALCULATE(
+        SUM('fact_orders'[item_plus_freight_total]),
+        KEEPFILTERS(
+            'dim_order_status'[order_status] = "delivered"
+        ),
+        KEEPFILTERS(
+            'fact_orders'[has_item_records] = TRUE()
+        )
+    )
+VAR EligibleOrders =
+    CALCULATE(
+        [Total Orders],
+        KEEPFILTERS(
+            'dim_order_status'[order_status] = "delivered"
+        ),
+        KEEPFILTERS(
+            'fact_orders'[has_item_records] = TRUE()
+        )
+    )
+RETURN
+    DIVIDE(EligibleValue, EligibleOrders)
+
+
+-- MEASURE 3 | KPI-015: Payment Reconciliation Mismatch Rate
+-- Mismatched orders divided by comparable orders.
+-- Full-data baseline: 0.58%.
+
+Financial Mismatch Rate =
+DIVIDE(
+    COALESCE([Mismatched Orders], 0),
+    [Comparable Orders]
+)
+
+
+-- MEASURE 4 | KPI-020: Delivered Order Share
+-- Full-data baseline: 97.02%.
+
+Delivered Order Share =
+DIVIDE(
+    COALESCE([Delivered Orders], 0),
+    [Total Orders]
+)
+
+
+-- MEASURE 5 | Supporting measure for KPI-021: Canceled Orders
+-- Full-data baseline: 625.
+
+Canceled Orders =
+COALESCE(
+    CALCULATE(
+        [Total Orders],
+        KEEPFILTERS(
+            'dim_order_status'[order_status] = "canceled"
+        )
+    ),
+    0
+)
+
+
+-- MEASURE 6 | KPI-021: Canceled Order Share
+-- Full-data baseline: 0.63%.
+
+Canceled Order Share =
+DIVIDE(
+    [Canceled Orders],
+    [Total Orders]
+)
+
+
+-- MEASURE 7 | KPI-022: Delivery Evaluation Coverage
+-- Evaluable delivered orders divided by all delivered orders.
+-- Full-data baseline: 99.99%; 8 delivered records
+-- have missing actual customer-delivery dates.
+
+Delivery Evaluation Coverage =
+DIVIDE(
+    COALESCE([Evaluable Delivered Orders], 0),
+    [Delivered Orders]
+)
+
+
+-- MEASURE 8 | KPI-024: Late Delivery Rate
+-- Late deliveries divided by evaluable delivered orders.
+-- Full-data baseline: 6.77%.
+
+Late Delivery Rate =
+DIVIDE(
+    COALESCE([Late Deliveries], 0),
+    [Evaluable Delivered Orders]
+)
+
+
+-- MEASURE 9 | KPI-027: Delivered Orders Missing Actual Delivery Date
+-- Full-data baseline: 8.
+
+Delivered Orders Missing Actual Delivery Date =
+COALESCE(
+    CALCULATE(
+        [Total Orders],
+        KEEPFILTERS(
+            'dim_order_status'[order_status] = "delivered"
+        ),
+        KEEPFILTERS(
+            ISBLANK(
+                'fact_orders'[order_delivered_customer_date]
+            )
+        )
+    ),
+    0
+)
+
+
+-- MEASURE 10 | KPI-053: Written Feedback Availability Rate
+-- Review-record numerator: at least a title or message.
+-- Full-data baseline: 43.03%.
+
+Written Feedback Availability Rate =
+DIVIDE(
+    [Reviews With Written Feedback],
+    [Review Records]
+)
+
+
+-- =====================================================
+-- SECTION 2: MEASURE FORMATTING
+-- =====================================================
+-- Orders With Items (Order Fact): Whole number, 0 decimals
+-- Delivered Order AOV - Item and Freight: BRL Currency, 2 decimals
+-- Financial Mismatch Rate: Percentage, 2 decimals
+-- Delivered Order Share: Percentage, 2 decimals
+-- Canceled Orders: Whole number, 0 decimals
+-- Canceled Order Share: Percentage, 2 decimals
+-- Delivery Evaluation Coverage: Percentage, 2 decimals
+-- Late Delivery Rate: Percentage, 2 decimals
+-- Delivered Orders Missing Actual Delivery Date: Whole number, 0 decimals
+-- Written Feedback Availability Rate: Percentage, 2 decimals
+
+
+-- =====================================================
+-- SECTION 3: VERIFIED FULL-DATASET BASELINES
+-- =====================================================
+-- Orders With Items (Order Fact): 98,666
+-- Delivered Order AOV: SQL/DAX validated; enter actual
+--   full-dataset value here after retrieving saved results.
+-- Financial Mismatch Rate: 0.58%
+-- Delivered Order Share: 97.02%
+-- Canceled Orders: 625
+-- Canceled Order Share: 0.63%
+-- Delivery Evaluation Coverage: 99.99%
+-- Late Delivery Rate: 6.77%
+-- Delivered Orders Missing Actual Delivery Date: 8
+-- Written Feedback Availability Rate: 43.03%
+
+
+-- =====================================================
+-- SECTION 4: VERIFIED Q1 2018 DELIVERED-ORDER COHORT
+-- =====================================================
+-- Purchase Date: 2018-01-01 through 2018-03-31
+-- Status: delivered
+-- Delivered Orders: 20,627
+-- Delivered Orders With Items: 20,627
+-- Item + Freight Total: R$3,164,654.11
+-- Delivered Order AOV: R$153.42
+-- Financial Mismatch Rate: 0.62%
+-- Delivery Evaluation Coverage: 100.00%
+-- Late Delivery Rate: 12.88%
+-- Delivered Orders Missing Actual Delivery Date: 0
+-- Written Feedback Availability Rate: 41.88%
+-- Q1 all-status figures: validated, numerical values
+--   not supplied in this conversation.
+
+
+-- =====================================================
+-- SECTION 5: CROSS-MEASURE ACCEPTANCE CHECKS
+-- =====================================================
+-- Check C: Full-data KPI results match independently
+--   audited PostgreSQL baselines.
+-- Check D: Seven consistency checks equal zero.
+-- Check E: Q1 2018 values verified against definitions.
+-- Check F: PostgreSQL three-cohort SQL reconciliation matches DAX.
+-- Check G: Product slicer does not silently filter
+--   Orders-fact presence metrics or order-based AOV.
+-- User confirmed completion and passing of all steps.
+-- SQL reference:
+-- sql/40_powerbi_missing_kpis_part1_reconciliation.sql
+-- KPI coverage reference:
+-- docs/powerbi_kpi_coverage_after_task10.csv
+
+
+-- =====================================================
+-- SECTION 6: BUSINESS INTERPRETATION
+-- =====================================================
+-- 1. Item-backed order counts use fact_orders.has_item_records.
+-- 2. AOV is for delivered, item-backed orders and uses
+--    recorded item prices + freight; it is not revenue.
+-- 3. Reconciliation mismatch rate excludes orders that
+--    lack item or payment records.
+-- 4. Delivery percentages use correctly scoped denominators.
+-- 5. Eight delivered-status orders without an actual
+--    delivery date remain visible in coverage exceptions.
+-- 6. Written feedback uses REVIEW-RECORD grain; records
+--    with no text may still contain a valid numeric score.
+-- 7. Purchase Date filters represent order-purchase cohorts.
+-- 8. Product and Seller do not automatically filter
+--    order-level financial/reconciliation metrics.
+-- 9. Ratios use DIVIDE and return BLANK for zero denominator.
+
+-- =====================================================
+-- END OF FILE
+-- =====================================================

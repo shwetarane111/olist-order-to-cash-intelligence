@@ -1,0 +1,8 @@
+order_status,comparable_orders,mismatched_orders,mismatch_rate_pct
+delivered,96477,569,0.59
+shipped,1106,4,0.362
+canceled,461,2,0.434
+invoiced,312,1,0.321
+approved,2,0,0.0
+processing,301,0,0.0
+unavailable,6,0,0.0

@@ -1,0 +1,116 @@
+
+-- ======================================================
+-- PROJECT: Order-to-Cash Intelligence Platform
+-- STEP: 7.4 Task 2
+-- FILE: 11_fulfillment_late_delivery_bands.dax
+-- PURPOSE: Late-delivery severity classifications
+-- TABLE: fact_orders
+-- ======================================================
+
+-- Create EACH calculated column separately using:
+-- fact_orders > New column
+--
+-- These are NOT measures.
+-- Do NOT execute this file as one DAX query.
+
+
+-- ======================================================
+-- CALCULATED COLUMN 1: Late Delivery Band
+-- ======================================================
+
+Late Delivery Band =
+VAR DaysLate =
+    'fact_orders'[delivery_variance_days]
+
+RETURN
+    IF(
+        'fact_orders'[is_delivery_evaluable] = TRUE()
+            && 'fact_orders'[is_delivered_late] = TRUE()
+            && NOT ISBLANK(DaysLate),
+
+        SWITCH(
+            TRUE(),
+
+            DaysLate >= 1 && DaysLate <= 3,
+                "1-3 days late",
+
+            DaysLate >= 4 && DaysLate <= 7,
+                "4-7 days late",
+
+            DaysLate >= 8 && DaysLate <= 14,
+                "8-14 days late",
+
+            DaysLate >= 15,
+                "15+ days late",
+
+            BLANK()
+        ),
+
+        BLANK()
+    )
+
+
+-- ======================================================
+-- CALCULATED COLUMN 2: Late Delivery Band Sort
+-- ======================================================
+
+-- Derive this from base fact columns rather than
+-- [Late Delivery Band] to avoid a potential
+-- Sort-by-column dependency cycle.
+
+Late Delivery Band Sort =
+VAR DaysLate =
+    'fact_orders'[delivery_variance_days]
+
+RETURN
+    IF(
+        'fact_orders'[is_delivery_evaluable] = TRUE()
+            && 'fact_orders'[is_delivered_late] = TRUE()
+            && NOT ISBLANK(DaysLate),
+
+        SWITCH(
+            TRUE(),
+
+            DaysLate >= 1 && DaysLate <= 3, 1,
+
+            DaysLate >= 4 && DaysLate <= 7, 2,
+
+            DaysLate >= 8 && DaysLate <= 14, 3,
+
+            DaysLate >= 15, 4,
+
+            BLANK()
+        ),
+
+        BLANK()
+    )
+
+
+-- ======================================================
+-- VERIFIED FULL-DATASET BASELINES
+-- ======================================================
+
+-- 1-3 days late:      1,870 orders
+-- 4-7 days late:      1,802 orders
+-- 8-14 days late:     1,478 orders
+-- 15+ days late:      1,384 orders
+
+-- Total late orders:  6,534
+
+-- VALIDATION
+-- 1,870 + 1,802 + 1,478 + 1,384 = 6,534
+-- Difference from [Late Deliveries]: 0
+
+-- Sorting:
+-- 1 = 1-3 days late
+-- 2 = 4-7 days late
+-- 3 = 8-14 days late
+-- 4 = 15+ days late
+
+-- Nonlate and nonevaluable orders return BLANK().
+-- Exclude BLANK() only in the severity chart.
+-- Do not remove such records from fact_orders.
+
+-- ======================================================
+-- END OF FILE
+-- ======================================================

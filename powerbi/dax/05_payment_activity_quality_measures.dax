@@ -1,0 +1,51 @@
+
+-- =====================================================
+-- PROJECT: Order-to-Cash Intelligence Platform
+-- STEP 7.3 - TASK 5
+-- FILE: 05_payment_activity_quality_measures.dax
+-- =====================================================
+
+-- FULL-DATASET VERIFIED BASELINES
+-- Payment Entries: 103,886
+-- Orders With Recorded Payments: 99,440
+-- Multiple-Entry Orders: 2,961
+-- Multiple-Entry Order Share: 2.98%
+-- Extra Entries Beyond First: 4,446
+-- Maximum Entries Per Order: 29
+-- Flagged Payment Entries: 11
+-- Orders With Flagged Payments: 10
+-- Flagged Entry Rate: 0.0106%
+-- Zero-Value Entries: 9
+-- Zero-Installment Entries: 2
+-- Undefined Method Entries: 3
+
+-- DATA INTERPRETATION
+-- Payment entries and distinct orders use different grains.
+-- Quality flags overlap; do not sum flags as distinct entries.
+-- Multiple-entry orders are not necessarily multi-method orders.
+-- Payment Purchase Date is the associated order purchase date.
+-- Recorded payments are not confirmed settlement or revenue.
+
+-- FILTER CONTEXT
+-- Measures recalculate within selected filters.
+-- Under a payment-method selection, multiple-entry metrics
+-- describe the entries visible within that selection.
+
+-- Q1 2018 delivered-cohort results:
+-- Add independently verified DAX/PostgreSQL results here.
+
+
+-- Q1 2018 DELIVERED-ORDER COHORT
+-- Payment Entries: 21,424
+-- Orders With Payments: 20,627
+-- Multiple-Entry Orders: 577
+-- Multiple-Entry Share: 2.80%
+-- Extra Payment Entries: 797
+-- Maximum Entries Per Order: 15
+-- Flagged Payment Entries: 1
+-- Orders With Flagged Payments: 1
+-- Flagged Entry Rate: 0.0047%
+-- Zero-Value Entries: 1
+-- Zero-Installment Entries: 0
+-- Undefined Method Entries: 0
+-- Recorded Payment Total: R$3,165,795.74

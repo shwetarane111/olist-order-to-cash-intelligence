@@ -1,0 +1,133 @@
+
+-- =====================================================
+-- PROJECT: Order-to-Cash Intelligence Platform
+-- STEP: 7.4 Task 4
+-- PAGE: 04 Customer and Satisfaction
+-- FILE: 13_customer_satisfaction_dashboard_measures.dax
+-- =====================================================
+
+-- This file contains saved-measure definitions and
+-- their validation notes.
+-- Each measure is created separately in Power BI.
+
+
+-- =====================================================
+-- MEASURE 1: Repeat Customer Share (Dashboard)
+-- =====================================================
+
+Repeat Customer Share (Dashboard) =
+DIVIDE(
+    [Repeat-Order Customer Identities],
+    [Customer Identities With Orders]
+)
+
+
+-- =====================================================
+-- DEPENDENCIES — EXISTING VALIDATED MEASURES
+-- =====================================================
+
+-- [Total Orders]
+-- [Customer Identities With Orders]
+-- [Repeat-Order Customer Identities]
+-- [Orders With Reviews]
+-- [Review Coverage Rate]
+-- [Review Records]
+-- [Average Review Score]
+-- [High-Rating Review Records]
+-- [High-Rating Review Share]
+-- [Reviews With Written Feedback]
+-- [Reviews Without Written Feedback]
+-- [Written Feedback Availability Rate]
+
+-- Do not recreate the dependencies above.
+
+
+-- =====================================================
+-- FULL-DATASET BASELINES
+-- =====================================================
+
+-- Total Orders: 99,441
+-- Customer Identities With Orders: 96,096
+-- Repeat-Order Customer Identities: 2,997
+-- Repeat Customer Share: 3.12%
+
+-- Review Records: 99,224
+-- Orders With Reviews: 98,673
+-- Review Coverage Rate: 99.23%
+-- Average Review Score: 4.09
+-- High-Rating Review Records (4 or 5): 76,470
+-- High-Rating Review Share: 77.07%
+-- Reviews With Written Feedback: 42,697
+-- Reviews Without Written Feedback: 56,527
+-- Written Feedback Availability Rate: 43.03%
+
+
+-- =====================================================
+-- Q1 2018 DELIVERED-PURCHASE COHORT
+-- =====================================================
+
+-- Purchase Date: 2018-01-01 through 2018-03-31
+-- Order Status: delivered
+
+-- Total Orders: 20,627
+-- Customer Identities With Orders: 20,211
+-- Repeat-Order Customer Identities: 400
+-- Repeat Customer Share: 1.98%
+
+-- Review Records: 20,630
+-- Orders With Reviews: 20,468
+-- Review Coverage Rate: 99.23%
+-- Average Review Score: 3.94
+-- High-Rating Review Records: 14,994
+-- High-Rating Review Share: 72.68%
+-- Reviews With Written Feedback: 8,640
+-- Reviews Without Written Feedback: 11,990
+-- Written Feedback Availability Rate: 41.88%
+
+
+-- =====================================================
+-- MEASUREMENT SAFEGUARDS
+-- =====================================================
+
+-- Customer identities are distinct customer_unique_id
+-- values represented in the selected order population.
+
+-- Repeat ordering means more than one order by a
+-- customer identity within the current filter context.
+
+-- Review Coverage Rate uses order-level has_review_record,
+-- not review-creation-date activity.
+
+-- Average Review Score is review-record weighted.
+
+-- High-Rating Review Share counts reviews with scores
+-- 4 and 5 among reviews with valid scores.
+
+-- Written Feedback Availability uses review-record grain:
+-- a review has a title and/or message.
+
+-- Monthly review measures refer to the associated
+-- order's purchase month, not review creation month.
+
+-- Review Date is not used as a slicer on this page.
+
+-- Product and Seller filters are not added:
+-- these dimensions do not automatically filter
+-- customer and review facts in the approved model.
+
+
+-- =====================================================
+-- VALIDATION REFERENCES
+-- =====================================================
+
+-- SQL:
+-- sql/45_powerbi_customer_satisfaction_dashboard_validation.sql
+
+-- QA:
+-- docs/powerbi_dashboard_04_customer_satisfaction_qa.md
+
+-- Final dashboard sign-off: PENDING
+
+-- =====================================================
+-- END OF FILE
+-- =====================================================

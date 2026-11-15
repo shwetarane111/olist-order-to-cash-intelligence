@@ -1,0 +1,5 @@
+issue,affected_payment_records,distinct_orders,order_status_breakdown
+zero_amount,9,8,delivered: 4; canceled: 3; shipped: 2
+zero_installments,2,2,delivered: 2
+undefined_method,3,3,canceled: 3
+order_without_payment,0,1,delivered: 1

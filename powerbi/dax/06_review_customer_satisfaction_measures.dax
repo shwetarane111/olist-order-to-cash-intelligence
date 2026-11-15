@@ -1,0 +1,82 @@
+
+-- =====================================================
+-- PROJECT: Order-to-Cash Intelligence Platform
+-- STEP 7.3 - TASK 6
+-- FILE: 06_review_customer_satisfaction_measures.dax
+-- =====================================================
+
+-- VERIFIED FULL-DATASET BASELINES
+-- Review Records: 99,224
+-- Distinct Reviewed Orders: 98,673
+-- Orders With Reviews: 98,673
+-- Review Coverage: 99.23%
+-- Average Review Score: 4.09
+-- High-Rating Reviews (4 or 5): 76,470
+-- High-Rating Share: 77.07%
+-- Reviews Without Written Feedback: 56,527
+-- Reviews With Written Feedback: 42,697
+-- Missing Review Titles: 87,658
+-- Missing Review Messages: 58,256
+-- Orders With Multiple Reviews: 547
+-- Additional Review Records: 551
+-- Maximum Reviews Per Order: 3
+
+-- METRIC DEFINITIONS
+-- Review Records counts review fact rows.
+-- Distinct Reviewed Orders counts unique order IDs in reviews.
+-- Orders With Reviews uses the order-level review flag.
+-- Review Coverage is calculated by purchase cohort.
+-- High-rating share counts scores 4 and 5 among valid scores.
+-- Written feedback means title OR message is present.
+-- Multiple-review statistics use review records per order.
+
+-- DATE FILTER BEHAVIOR
+-- Purchase Date filters review records by associated order.
+-- Review Date filters review records by creation date.
+-- Review Date does not filter fact_orders.
+
+-- CAUTION
+-- Average Review Score is review-record weighted.
+-- Do not describe it as an order-weighted average.
+-- Review Coverage does not measure customer retention.
+
+-- Q1 2018 delivered-cohort baselines:
+-- Add verified DAX/PostgreSQL results here.
+
+
+-- =====================================================
+-- Q1 2018 DELIVERED-ORDER COHORT VALIDATION
+-- Purchase dates: January 1 - March 31, 2018
+-- Order status: delivered
+-- =====================================================
+
+-- Delivered Orders: 20,627
+-- Review Records: 20,630
+-- Distinct Reviewed Orders: 20,468
+-- Orders With Reviews: 20,468
+-- Review Coverage Rate: 99.23%
+-- Average Review Score: 3.94
+-- High-Rating Review Records (4 or 5): 14,994
+-- High-Rating Review Share: 72.68%
+--
+-- Reviews Without Written Feedback: 11,990
+-- Reviews With Written Feedback: 8,640
+-- Reviews Missing Title: 20,505
+-- Reviews Missing Message: 11,998
+--
+-- Orders With Multiple Reviews: 160
+-- Additional Review Records Beyond First: 162
+-- Maximum Review Records Per Order: 3
+--
+-- VALIDATION RESULTS
+-- Power BI and PostgreSQL results matched.
+-- Written feedback partition difference: 0
+-- 11,990 + 8,640 = 20,630 review records
+-- 20,630 - 20,468 = 162 additional review records
+-- Distinct reviewed-order difference: 0
+--
+-- INTERPRETATION
+-- Results use the associated order's purchase date.
+-- They do not describe reviews created during Q1 2018.
+-- Average Review Score is review-record weighted.
+-- Review Coverage Rate is based on distinct orders.

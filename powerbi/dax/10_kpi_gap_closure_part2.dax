@@ -1,0 +1,188 @@
+-- ============================================================
+-- PROJECT: Order-to-Cash Intelligence Platform
+-- STEP 7.3 - TASK 11
+-- FILE: 10_kpi_gap_closure_part2.dax
+-- PURPOSE: Final ten KPI dictionary gaps (plus two helpers)
+-- ============================================================
+-- REFERENCE FILE: Create each measure separately under _Measures.
+-- Do not paste the entire file as one Power BI measure.
+-- KPIs: 032, 033, 034, 039, 041, 042, 043, 044, 047, 048.
+-- Baselines without previous independent SQL evidence remain PENDING.
+
+-- HELPER 1: Orders whose customer location has a strictly five-digit ZIP.
+-- The round-trip FORMAT check preserves leading zeros and rejects
+-- non-digit strings even if VALUE can parse scientific notation.
+Valid-ZIP Customer Orders =
+VAR ValidLocations =
+    FILTER(
+        'dim_customer_geography',
+        VAR ZipText =
+            TRIM('dim_customer_geography'[customer_zip_code_prefix] & "")
+        VAR ZipNumber = IFERROR(VALUE(ZipText), -1)
+        RETURN
+            LEN(ZipText) = 5
+                && ZipNumber >= 0
+                && FORMAT(ZipNumber, "00000") = ZipText
+    )
+RETURN
+    COALESCE(
+        CALCULATE([Total Orders], KEEPFILTERS(ValidLocations)),
+        0
+    )
+
+-- KPI-032: Matched customer ZIP / orders with valid customer ZIP.
+Customer ZIP Reference Coverage =
+DIVIDE(
+    CALCULATE(
+        [Valid-ZIP Customer Orders],
+        KEEPFILTERS('dim_customer_geography'[has_geo_reference] = TRUE())
+    ),
+    [Valid-ZIP Customer Orders]
+)
+
+-- HELPER 2: Sellers whose seller ZIP is strictly five-digit.
+Sellers With Valid ZIP =
+VAR ValidSellers =
+    FILTER(
+        'dim_seller',
+        VAR ZipText = TRIM('dim_seller'[seller_zip_code_prefix] & "")
+        VAR ZipNumber = IFERROR(VALUE(ZipText), -1)
+        RETURN
+            LEN(ZipText) = 5
+                && ZipNumber >= 0
+                && FORMAT(ZipNumber, "00000") = ZipText
+    )
+RETURN
+    COALESCE(COUNTROWS(ValidSellers), 0)
+
+-- KPI-033: Sellers with matched ZIP / sellers with valid ZIP.
+Seller ZIP Reference Coverage =
+DIVIDE(
+    CALCULATE(
+        [Sellers With Valid ZIP],
+        KEEPFILTERS('dim_seller'[has_geo_reference] = TRUE())
+    ),
+    [Sellers With Valid ZIP]
+)
+
+-- KPI-034: Map-ready order-associated customer records /
+-- orders with valid ZIP, rather than ALL orders.
+Map-Ready Customer Order Coverage (Valid ZIP) =
+DIVIDE(
+    CALCULATE(
+        [Valid-ZIP Customer Orders],
+        KEEPFILTERS(
+            'dim_customer_geography'[has_map_ready_coordinate] = TRUE()
+        )
+    ),
+    [Valid-ZIP Customer Orders]
+)
+
+-- KPI-039: Item-price share of selected Product category.
+-- Remove the entire Product dimension only for denominator.
+Product Category Item-Price Share =
+DIVIDE(
+    [Recorded Item Price],
+    CALCULATE(
+        [Recorded Item Price],
+        REMOVEFILTERS('dim_product')
+    )
+)
+
+-- KPI-041: Distinct (seller_id, order_id) associations.
+Seller-Order Associations =
+COALESCE(
+    COUNTROWS(
+        SUMMARIZE(
+            'fact_order_items',
+            'fact_order_items'[seller_id],
+            'fact_order_items'[order_id]
+        )
+    ),
+    0
+)
+
+-- KPI-042: Sellers tied to >=2 DISTINCT orders in filter context.
+Sellers With Multiple Distinct Orders =
+COALESCE(
+    COUNTROWS(
+        FILTER(
+            VALUES('fact_order_items'[seller_id]),
+            CALCULATE(
+                DISTINCTCOUNT('fact_order_items'[order_id])
+            ) > 1
+        )
+    ),
+    0
+)
+
+-- KPI-043: Multi-order sellers / active sellers with item records.
+Multi-Order Seller Share =
+DIVIDE(
+    [Sellers With Multiple Distinct Orders],
+    [Sellers With Item Records]
+)
+
+-- KPI-044: Re-rank ALL sellers under current NON-seller filters.
+-- Seller ID ascending is the unique deterministic tie breaker.
+Top 10 Seller Item-Price Concentration =
+VAR SellerPriceTable =
+    CALCULATETABLE(
+        ADDCOLUMNS(
+            VALUES('dim_seller'[seller_id]),
+            "@ItemPrice",
+                COALESCE(CALCULATE([Recorded Item Price]), 0)
+        ),
+        REMOVEFILTERS('dim_seller')
+    )
+VAR TopTenSellers =
+    TOPN(
+        10,
+        SellerPriceTable,
+        [@ItemPrice], DESC,
+        'dim_seller'[seller_id], ASC
+    )
+VAR TopTenValue = SUMX(TopTenSellers, [@ItemPrice])
+VAR TotalEligibleValue =
+    CALCULATE(
+        [Recorded Item Price],
+        REMOVEFILTERS('dim_seller')
+    )
+RETURN
+    DIVIDE(TopTenValue, TotalEligibleValue)
+
+-- KPI-047: Payment amount share by payment_method.
+-- Retain date, status, customer, geographic and other filters.
+Recorded Payment Amount Share by Method =
+DIVIDE(
+    [Recorded Payment Volume],
+    CALCULATE(
+        [Recorded Payment Volume],
+        REMOVEFILTERS('fact_payments'[payment_method])
+    )
+)
+
+-- KPI-048: Credit-card entry average for installment counts > 0.
+-- Existing payment method selections are respected (KEEPFILTERS).
+Average Valid Credit-Card Installments =
+CALCULATE(
+    AVERAGE('fact_payments'[payment_installments]),
+    KEEPFILTERS('fact_payments'[payment_method] = "credit_card"),
+    KEEPFILTERS('fact_payments'[payment_installments] > 0)
+)
+
+-- ============================================================
+-- VALIDATION TARGETS
+-- ============================================================
+-- KPI-042 Sellers With Multiple Distinct Orders (ALL): 2,524
+-- KPI-043 Multi-Order Seller Share (ALL): 81.55%
+-- KPI-047 Credit-card amount share (ALL): 78.34%
+-- All ten missing KPI definitions: compare to independent PostgreSQL.
+-- Q1 2018 cohort: delivered orders purchased Jan 1 - Mar 31.
+-- Denominator ZIP rule: exactly five ASCII digits, including 0-prefixed.
+-- Product benchmark removes Product dimension filters only.
+-- Seller concentration benchmark removes Seller dimension filters only.
+-- Payment share benchmark removes payment_method filter only.
+-- Do not mark KPI rows PASS before full-data/filtered SQL checks succeed.
+-- SQL audit: sql/41_powerbi_missing_kpis_part2_reconciliation.sql
+-- ============================================================

@@ -1,0 +1,90 @@
+
+# ====================================================
+# Order-to-Cash Intelligence Platform
+# Git ignore rules for a public portfolio repository
+# ====================================================
+
+# Original Olist source CSVs and generated data
+data/raw/
+data/interim/
+data/processed/
+data/exports/
+
+# Guard against accidentally copied Olist CSV files
+olist_*_dataset.csv
+product_category_name_translation.csv
+
+# Power BI binary reports and templates
+# Keep local until publication and data review.
+*.pbix
+*.pbit
+
+# Database backups and exports
+*.backup
+*.bak
+*.dump
+*.sql.gz
+*.sqlite
+*.sqlite3
+*.db
+
+# Environment variables and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+secrets/
+credentials/
+private/
+service-account*.json
+credentials.json
+
+# Python virtual environments
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Local development files
+.vscode/settings.json
+.idea/
+*.log
+*.tmp
+*.swp
+
+# System-generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Power BI temporary and recovery files
+*.pbix.tmp
+*.pbi.local
+*.abf
+
+# Local exports and report backups
+backups/
+exports/
+temp/
+tmp/
+
+# ====================================================
+# Intentionally INCLUDED:
+#
+# README.md
+# docs/*.md
+# sql/*.sql
+# powerbi/dax/*.dax
+# scripts/*.py
+# assets/screenshots/*.png
+# docs/*.csv (small QA manifests only)
+#
+# Review staged files before every public push.
+# ====================================================
