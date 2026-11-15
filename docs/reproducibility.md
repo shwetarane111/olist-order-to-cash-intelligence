@@ -34,6 +34,32 @@ Record the versions used in your own environment.
 
 Python package dependencies should be established from the actual imports and environment used by the existing project scripts. Do not assume that an arbitrary installed-package list represents the project's minimal dependencies.
 
+
+### Python Environment
+
+Create a virtual environment and install
+the project's direct Python dependencies.
+
+```powershell
+python -m venv .venv
+
+.\.venv\Scripts\Activate.ps1
+
+python -m pip install --upgrade pip
+
+python -m pip install -r requirements.txt
+```
+
+The dependency file lists observed direct packages,
+not an exact tested environment lockfile.
+
+The analytical warehouse also requires a local
+PostgreSQL installation and the original Olist
+CSV files obtained separately from Kaggle.
+
+The pipeline is not claimed to be a one-command
+fully automated rebuild.
+
 ## 3. Obtain the Source Data
 
 Dataset:
