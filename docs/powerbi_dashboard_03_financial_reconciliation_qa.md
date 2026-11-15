@@ -9,7 +9,7 @@
 
 **Phase:** Step 7.4 — Task 3
 
-**Status:** IN PROGRESS — final validation pending
+**Status:** PASS — Financial Reconciliation dashboard validated against full-history and Q1 delivered-cohort records, DAX F1–F3, PostgreSQL SQL-1 through SQL-3, and interaction tests.
 
 **Source:** PostgreSQL `olist_analytics`, analytics layer
 
@@ -340,7 +340,7 @@ settled during January-March 2018.
 
 Full-history and Q1 2018 baseline comparison.
 
-Status: PENDING
+Status: PASS — verified during Page 03 QA and consolidated release validation.
 
 ### Check F2
 
@@ -353,7 +353,7 @@ Expected consistency results:
 - Rate partition difference: 0
 - Absolute discrepancy >= absolute net difference: TRUE
 
-Status: PENDING
+Status: PASS — verified during Page 03 QA and consolidated release validation.
 
 ### Check F3
 
@@ -367,7 +367,7 @@ Monthly aggregation expected:
 
 Monthly aggregation differences must be zero.
 
-Status: PENDING
+Status: PASS — verified during Page 03 QA and consolidated release validation.
 
 ---
 
@@ -385,7 +385,7 @@ populations and monetary amounts.
 Expected:
 Two cohorts matching DAX F1.
 
-Status: PENDING
+Status: PASS — verified during Page 03 QA and consolidated release validation.
 
 ### SQL-2
 
@@ -406,14 +406,14 @@ Compare:
 - Net Payment Difference
 - Absolute Financial Discrepancy
 
-Status: PENDING
+Status: PASS — verified during Page 03 QA and consolidated release validation.
 
 ### SQL-3
 
 Validates reconciliation status populations
 for the complete dataset and Q1 delivered cohort.
 
-Status: PENDING
+Status: PASS — verified during Page 03 QA and consolidated release validation.
 
 ---
 
@@ -465,36 +465,36 @@ filter separate item and payment facts.
 
 ## 12. Interaction QA Checklist
 
-- [ ] Purchase Date filters all cards.
-- [ ] Purchase Date filters all charts.
-- [ ] Order Status filters all cards.
-- [ ] Order Status filters all charts.
-- [ ] Monthly Match Rate point filters by month.
-- [ ] Monthly Net Difference column filters by month.
-- [ ] Stacked chart has no outgoing interactions.
-- [ ] Exception chart has no outgoing interactions.
-- [ ] Selecting MISMATCH leaves headline cards unchanged.
-- [ ] Q1 2018 delivered filters match baselines.
-- [ ] Clearing filters restores full-history values.
+- [x] Purchase Date filters all cards.
+- [x] Purchase Date filters all charts.
+- [x] Order Status filters all cards.
+- [x] Order Status filters all charts.
+- [x] Monthly Match Rate point filters by month.
+- [x] Monthly Net Difference column filters by month.
+- [x] Stacked chart has no outgoing interactions.
+- [x] Exception chart has no outgoing interactions.
+- [x] Selecting MISMATCH leaves headline cards unchanged.
+- [x] Q1 2018 delivered filters match baselines.
+- [x] Clearing filters restores full-history values.
 
 ---
 
 ## 13. Visual QA Checklist
 
-- [ ] Page title is Financial Reconciliation.
-- [ ] Six cards are aligned and readable.
-- [ ] Currency displays use BRL.
-- [ ] Rates show two decimal places.
-- [ ] Monthly chart labels are chronological.
-- [ ] Chart titles are descriptive.
-- [ ] Redundant subtitles are removed.
-- [ ] Match and mismatch colors are distinct.
-- [ ] Negative net differences remain negative.
-- [ ] Exception chart counts are displayed accurately.
-- [ ] No inherited Late Delivery Band filter remains.
-- [ ] No clipped labels or overlapping visuals.
-- [ ] Editing gridlines are hidden in screenshots.
-- [ ] Clear all slicers button is functional.
+- [x] Page title is Financial Reconciliation.
+- [x] Six cards are aligned and readable.
+- [x] Currency displays use BRL.
+- [x] Rates show two decimal places.
+- [x] Monthly chart labels are chronological.
+- [x] Chart titles are descriptive.
+- [x] Redundant subtitles are removed.
+- [x] Match and mismatch colors are distinct.
+- [x] Negative net differences remain negative.
+- [x] Exception chart counts are displayed accurately.
+- [x] No inherited Late Delivery Band filter remains.
+- [x] No clipped labels or overlapping visuals.
+- [x] Editing gridlines are hidden in screenshots.
+- [x] Clear all slicers button is functional.
 
 ---
 
@@ -558,24 +558,78 @@ docs/powerbi_kpi_coverage_final_after_task11.csv
 
 ---
 
+
 ## 16. Final Sign-Off
 
-Page:
-03 Financial Reconciliation
+**Page:** 03 Financial Reconciliation
 
-Status:
-IN PROGRESS
+**Final status: PASS**
 
-Remaining actions:
+### Full-History Financial Results
 
-- Confirm all six card values.
-- Confirm DAX F1, F2 and F3.
-- Reconcile SQL-1, SQL-2 and SQL-3.
-- Complete interaction tests.
-- Review final visual appearance.
-- Save PBIX and final QA document.
+| Metric | Result |
+|---|---:|
+| Total Orders | 99,441 |
+| Comparable Orders | 98,665 |
+| Matched Orders | 98,089 |
+| Mismatched Orders | 576 |
+| Financial Coverage Gaps | 776 |
+| Financial Match Rate | 99.42% |
+| Net Comparable Payment Difference | R$2,870.39 |
+| Absolute Financial Discrepancy | R$3,271.95 |
 
-Set status to PASS only after all checks succeed.
+### Q1 2018 Delivered Cohort
+
+| Metric | Result |
+|---|---:|
+| Total Orders | 20,627 |
+| Comparable Orders | 20,627 |
+| Matched Orders | 20,499 |
+| Mismatched Orders | 128 |
+| Financial Coverage Gaps | 0 |
+| Financial Match Rate | 99.38% |
+| Net Comparable Payment Difference | R$1,141.63 |
+| Absolute Financial Discrepancy | R$1,142.37 |
+
+### Reconciliation Controls
+
+Full-history order partition:
+
+98,665 comparable + 776 coverage gaps
+= 99,441 total orders.
+
+Comparable-order partition:
+
+98,089 matched + 576 mismatched
+= 98,665 comparable orders.
+
+Absolute financial discrepancy is greater
+than or equal to the absolute net difference.
+
+### Completed QA
+
+- [x] Six headline KPI cards validated
+- [x] DAX F1 passed
+- [x] DAX F2 passed
+- [x] DAX F3 passed
+- [x] PostgreSQL SQL-1 passed
+- [x] PostgreSQL SQL-2 passed
+- [x] PostgreSQL SQL-3 passed
+- [x] Full-history and Q1 results reconciled
+- [x] Chart interactions tested
+- [x] No inherited Late Delivery Band filter
+- [x] Visual QA completed
+- [x] PBIX and QA documentation saved
+
+**Final publication status: PASS**
+
+Recorded monetary amounts represent source
+transactions and reconciliation results,
+not recognized accounting revenue or
+independently verified cash settlement.
+
+Consolidated release reference:
+`docs/powerbi_release_qa_7_5.md`
 
 Next page:
 Step 7.4 Task 4 — Customer and Satisfaction.
