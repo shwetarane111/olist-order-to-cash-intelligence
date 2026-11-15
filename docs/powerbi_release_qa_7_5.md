@@ -8,7 +8,7 @@
 **Release candidate:**
 `powerbi/Order_to_Cash_Intelligence_release_candidate.pbix`
 
-**Status:** IN PROGRESS — release validation pending
+**Status:** PASS — Six-page Power BI release QA completed. All 36 KPI cards, full-history and Q1 2018 delivered-cohort regressions, DAX-R1 through DAX-R3, SQL-R1 through SQL-R4, model relationships, slicer interactions, and six dashboard screenshots were validated.
 
 **Validation database:** PostgreSQL `olist_analytics`
 
@@ -215,7 +215,7 @@ unless deliberately configured and tested.
 | On-Time Rate | 93.23% | 87.12% |
 | Financial Mismatch Rate | 0.58% | 0.62% |
 
-Status: PENDING release recheck
+Status: PASS — full-history and Q1 2018 delivered-cohort results reconciled.
 
 ---
 
@@ -235,7 +235,7 @@ Status: PENDING release recheck
 Late deliveries must reconcile to the
 previously validated severity bands.
 
-Status: PENDING release recheck
+Status: PASS — full-history and Q1 2018 delivered-cohort results reconciled.
 
 ---
 
@@ -254,7 +254,7 @@ Status: PENDING release recheck
 Absolute discrepancy must not be less than
 the absolute value of the net difference.
 
-Status: PENDING release recheck
+Status: PASS — full-history and Q1 2018 delivered-cohort results reconciled.
 
 ---
 
@@ -279,7 +279,7 @@ The review-record-weighted full average is 4.09.
 The unweighted mean of monthly review-score
 averages is 3.82 and is not the headline KPI.
 
-Status: PENDING release recheck
+Status: PASS — full-history and Q1 2018 delivered-cohort results reconciled.
 
 ---
 
@@ -301,7 +301,7 @@ Status: PENDING release recheck
 Top 10 values use the seller ranking from
 recorded item-price contribution.
 
-Status: PENDING release recheck
+Status: PASS — full-history and Q1 2018 delivered-cohort results reconciled.
 
 ---
 
@@ -325,7 +325,7 @@ in the headline total-order denominator.
 Page 06 uses a native state-ranking bar chart,
 not Azure Maps.
 
-Status: PENDING release recheck
+Status: PASS — full-history and Q1 2018 delivered-cohort results reconciled.
 
 ---
 
@@ -342,7 +342,7 @@ Expected:
 Two cohorts matching Section 7, 8 and 9
 where those metrics overlap.
 
-Status: PENDING
+Status: PASS — validated during Step 7.5 release QA.
 
 ### DAX-R2
 
@@ -361,7 +361,7 @@ population reconciliation.
 Expected:
 Two cohorts matching Section 7 and 12.
 
-Status: PENDING
+Status: PASS — validated during Step 7.5 release QA.
 
 ---
 
@@ -378,7 +378,7 @@ Expected:
 Two rows.
 All partition differences zero.
 
-Status: PENDING
+Status: PASS — validated during Step 7.5 release QA.
 
 ### SQL-R2
 
@@ -389,7 +389,7 @@ Two rows.
 Reviewed-order difference zero.
 Written-feedback partition difference zero.
 
-Status: PENDING
+Status: PASS — validated during Step 7.5 release QA.
 
 ### SQL-R3
 
@@ -399,7 +399,7 @@ Expected:
 Two rows.
 All values match DAX release checks.
 
-Status: PENDING
+Status: PASS — validated during Step 7.5 release QA.
 
 ### SQL-R4
 
@@ -411,7 +411,7 @@ All audit statuses PASS.
 All partition differences zero.
 No missing dimension links.
 
-Status: PENDING
+Status: PASS — validated during Step 7.5 release QA.
 
 ---
 
@@ -419,73 +419,73 @@ Status: PENDING
 
 ### Page 01
 
-- [ ] Purchase Date filters all relevant visuals
-- [ ] Order Status filters all relevant visuals
-- [ ] Monthly charts filter by month as designed
-- [ ] Reconciliation Status outgoing filtering disabled
-- [ ] Clear all slicers works
+- [x] Purchase Date filters all relevant visuals
+- [x] Order Status filters all relevant visuals
+- [x] Monthly charts filter by month as designed
+- [x] Reconciliation Status outgoing filtering disabled
+- [x] Clear all slicers works
 
 ### Page 02
 
-- [ ] Purchase Date and Status filters work
-- [ ] Monthly On-Time trend filters by month
-- [ ] Stacked delivery chart outgoing filtering disabled
-- [ ] Late Delivery Bands outgoing filtering disabled
-- [ ] Clear all slicers works
+- [x] Purchase Date and Status filters work
+- [x] Monthly On-Time trend filters by month
+- [x] Stacked delivery chart outgoing filtering disabled
+- [x] Late Delivery Bands outgoing filtering disabled
+- [x] Clear all slicers works
 
 ### Page 03
 
-- [ ] Purchase Date and Status filters work
-- [ ] Monthly financial trend filtering works
-- [ ] Financial Exceptions outgoing filtering disabled
-- [ ] No inherited Late Delivery Band restrictions
-- [ ] Clear all slicers works
+- [x] Purchase Date and Status filters work
+- [x] Monthly financial trend filtering works
+- [x] Financial Exceptions outgoing filtering disabled
+- [x] No inherited Late Delivery Band restrictions
+- [x] Clear all slicers works
 
 ### Page 04
 
-- [ ] Purchase Date and Status filters work
-- [ ] Monthly customer and review trends filter by month
-- [ ] Review Score Distribution outgoing filtering disabled
-- [ ] Written Feedback outgoing filtering disabled
-- [ ] No inherited financial filters
-- [ ] Clear all slicers works
+- [x] Purchase Date and Status filters work
+- [x] Monthly customer and review trends filter by month
+- [x] Review Score Distribution outgoing filtering disabled
+- [x] Written Feedback outgoing filtering disabled
+- [x] No inherited financial filters
+- [x] Clear all slicers works
 
 ### Page 05
 
-- [ ] Purchase Date and Status filters work
-- [ ] Monthly Multi-Order Seller Share filters by month
-- [ ] Top 10 Sellers outgoing filtering disabled
-- [ ] Top 10 Categories outgoing filtering disabled
-- [ ] Stacked Item Price/Freight outgoing filtering disabled
-- [ ] Clear all slicers works
+- [x] Purchase Date and Status filters work
+- [x] Monthly Multi-Order Seller Share filters by month
+- [x] Top 10 Sellers outgoing filtering disabled
+- [x] Top 10 Categories outgoing filtering disabled
+- [x] Stacked Item Price/Freight outgoing filtering disabled
+- [x] Clear all slicers works
 
 ### Page 06
 
-- [ ] Purchase Date and Status filters work
-- [ ] Top 10 Customer States responds to slicers
-- [ ] Monthly geographic share filters by month
-- [ ] Four-Fact Coverage outgoing filtering disabled
-- [ ] Geographic Exceptions outgoing filtering disabled
-- [ ] Clear all slicers works
+- [x] Purchase Date and Status filters work
+- [x] Top 10 Customer States responds to slicers
+- [x] Monthly geographic share filters by month
+- [x] Four-Fact Coverage outgoing filtering disabled
+- [x] Geographic Exceptions outgoing filtering disabled
+- [x] Clear all slicers works
 
 ---
 
 ## 16. Visual Formatting QA
 
-- [ ] All six page headings are consistent
-- [ ] All 36 KPI cards are readable
-- [ ] All 24 analytical charts are available
-- [ ] No duplicate or outdated chart titles
-- [ ] No inherited incorrect axis titles
-- [ ] All month labels are chronological
-- [ ] BRL financial formatting is consistent
-- [ ] Percentage measures have appropriate precision
-- [ ] Top 10 rankings retain all ten categories
-- [ ] Scrollbars do not conceal data permanently
-- [ ] No editing gridlines in release screenshots
-- [ ] No selected visual resize handles
-- [ ] No clipped KPI values
-- [ ] No unintended report/page-level filters
+- [x] All six page headings are consistent
+- [x] All 36 KPI cards are readable
+- [x] All 24 analytical charts are available
+- [x] No duplicate or outdated chart titles
+- [x] No inherited incorrect axis titles
+- [x] All month labels are chronological
+- [x] BRL financial formatting is consistent
+- [x] Percentage measures have appropriate precision
+- [x] Top 10 rankings retain all ten categories
+- [x] Scrollbars do not conceal data permanently
+- [x] No editing gridlines in release screenshots
+- [x] No selected visual resize handles
+- [x] No clipped KPI values
+- [x] No unintended report/page-level filters
 
 ---
 
@@ -504,7 +504,7 @@ Required files:
 6. 06_geographic_coverage_quality.png
 
 Status:
-PENDING capture and review.
+PASS — All six dashboard screenshots captured and published.
 
 ---
 
@@ -569,44 +569,87 @@ from public repository documentation.
 
 ---
 
+
 ## 20. Release Sign-Off Checklist
 
-- [ ] All 36 KPI cards validated
-- [ ] All six Q1 cohort regressions validated
-- [ ] DAX-R1 passed
-- [ ] DAX-R2 passed
-- [ ] DAX-R3 passed
-- [ ] SQL-R1 passed
-- [ ] SQL-R2 passed
-- [ ] SQL-R3 passed
-- [ ] SQL-R4 passed
-- [ ] All interaction tests passed
-- [ ] Inherited filters reviewed
-- [ ] Visual consistency audit passed
-- [ ] Six final screenshots captured
-- [ ] Release-candidate PBIX saved
-- [ ] No credentials present in planned public files
-- [ ] Source QA documentation retained
+- [x] All 36 KPI cards validated
+- [x] All six Q1 cohort regressions validated
+- [x] DAX-R1 passed
+- [x] DAX-R2 passed
+- [x] DAX-R3 passed
+- [x] SQL-R1 passed
+- [x] SQL-R2 passed
+- [x] SQL-R3 passed
+- [x] SQL-R4 passed
+- [x] All interaction tests passed
+- [x] Inherited filters reviewed
+- [x] Visual consistency audit passed
+- [x] Six final screenshots captured
+- [x] Release-candidate PBIX saved locally
+- [x] No obvious credentials identified in public project files
+- [x] Source QA documentation retained
+
+### Validation Summary
+
+The complete historical dataset and Q1 2018
+delivered-order purchase cohort reconciled across
+the six dashboard pages.
+
+The validated release includes:
+
+- 12 imported warehouse tables
+- 20 active warehouse relationships
+- 55 documented KPIs with implementation status PASS
+- 6 dashboard pages
+- 36 KPI cards
+- 24 analytical charts
+- 3 consolidated DAX release checks
+- 4 independent PostgreSQL release checks
+
+All numerical and filtering validations passed.
+
+Minor presentation refinements, including chart
+scrollbars and static screenshot readability,
+are nonblocking improvements.
+
+The local PBIX release candidate is retained
+outside the public GitHub repository.
 
 ---
 
+
 ## 21. Release Decision
 
-Current release decision:
-PENDING
+**Final release decision: PASS**
 
 Release candidate:
-Order_to_Cash_Intelligence_release_candidate.pbix
+`powerbi/Order_to_Cash_Intelligence_release_candidate.pbix`
 
-If every acceptance criterion passes:
-Change release decision to PASS.
+Release validation:
+Step 7.5 — Completed.
 
-If any check fails:
-Record the metric, affected page, actual value,
-expected value, root cause and corrective action.
+Evidence:
 
-Do not mark the release PASS solely because
-the visuals render successfully.
+- Full-history KPI regression: PASS
+- Q1 2018 delivered-cohort regression: PASS
+- DAX-R1 through DAX-R3: PASS
+- PostgreSQL SQL-R1 through SQL-R4: PASS
+- Model relationship audit: PASS
+- Cross-page interactions: PASS
+- Six screenshot captures: COMPLETE
+
+The release decision is based on the completed
+local Power BI and PostgreSQL validation work.
+
+The public repository retains the validation
+scripts, documentation, and screenshots.
+
+The PBIX binary and its imported source records
+are intentionally excluded from GitHub.
+
+The release is suitable for portfolio presentation,
+subject to final GitHub documentation consistency
+and publication review.
 
 ---
 
