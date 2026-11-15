@@ -75,7 +75,21 @@ See the [Architecture & Data Model](docs/architecture.md) for the detailed workf
 
 ---
 
-## Six Interactive Dashboards
+
+## Six Power BI Dashboards — Screenshots & Technical Implementation
+
+The following screenshots show the six completed report pages.
+
+The dashboards support interactive filtering in the
+locally maintained Power BI Desktop report.
+
+This public repository provides screenshots,
+warehouse SQL, DAX definitions, KPI documentation,
+and independent validation evidence.
+
+The PBIX binary is intentionally not distributed
+through this repository; GitHub visitors cannot
+interact with the report directly.
 
 ### 01 — Executive Overview
 
