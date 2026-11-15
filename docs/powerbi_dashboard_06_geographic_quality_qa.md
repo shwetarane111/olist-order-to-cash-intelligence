@@ -9,7 +9,7 @@
 
 **Phase:** Step 7.4 — Task 6
 
-**Status:** IN PROGRESS — final validation pending
+**Status:** PASS — Geographic Coverage and Data Quality dashboard validated through DAX G1–G5, PostgreSQL SQL-0 through SQL-5, full-history and Q1 cohorts, geographic ranking comparisons, and interaction QA.
 
 **Source:** PostgreSQL `olist_analytics`, analytics layer
 
@@ -344,43 +344,80 @@ Map-ready sellers:
 
 ---
 
+
 ## 11. Top 10 Customer-State Ranking Validation
 
 DAX reference:
 Check G5.
 
-SQL reference:
-SQL-2 in the geographic dashboard audit.
+PostgreSQL reference:
+SQL-2 in
+`sql/47_powerbi_geographic_dashboard_validation.sql`.
 
-### Full Dataset
+**Validation status: PASS**
 
-Record the verified state ranking after comparison:
+DAX G5 and SQL-2 were compared using
+the full historical dataset and the Q1 2018
+delivered-order purchase cohort.
 
-| Rank | State | Map-Ready Orders |
+The published dashboard retains the Top 10
+state filter and descending order ranking.
+
+### Full-Dataset Screenshot Evidence
+
+The following four states and counts are
+directly visible in the archived Page 06 screenshot.
+
+| Visible Rank | State | Map-Ready Orders |
 |---|---|---:|
-| 1 | PENDING | PENDING |
-| 2 | PENDING | PENDING |
-| 3 | PENDING | PENDING |
-| 4 | PENDING | PENDING |
-| 5 | PENDING | PENDING |
-| 6 | PENDING | PENDING |
-| 7 | PENDING | PENDING |
-| 8 | PENDING | PENDING |
-| 9 | PENDING | PENDING |
-| 10 | PENDING | PENDING |
+| 1 | SP | 41,731 |
+| 2 | RJ | 12,839 |
+| 3 | MG | 11,624 |
+| 4 | RS | 5,462 |
 
-### Q1 2018 Delivered
+The screenshot displays four ranked categories
+before scrolling.
 
-Record state ranking and counts
-from the Q1 rows of SQL-2.
+The remaining six ranked categories are available
+in the Power BI visual and are reproducible
+using DAX G5 and PostgreSQL SQL-2.
 
-Acceptance:
-State codes and counts must match Power BI
-under the same purchase-date and status filters.
+Their individual values have not been copied
+into this public QA document because the complete
+ten-row query output was not archived here.
 
-Top 10 totals are not expected to equal
-all map-ready orders because other states
-are also represented.
+No values have been invented.
+
+### Q1 2018 Delivered Cohort
+
+The standard cohort uses:
+
+- Purchase Date: 2018-01-01 through 2018-03-31
+- Order Status: delivered
+
+The Q1 Top 10 state comparison was included
+in the completed DAX/SQL validation.
+
+### Ranking Interpretation
+
+Top 10 state counts are derived from
+map-ready Orders fact records associated
+with customer geography.
+
+The Top 10 sum does not necessarily equal
+the full map-ready order population,
+because orders from other states remain
+outside the ranked subset.
+
+State-level geographic analysis does not
+identify exact customer residential or
+delivery locations.
+
+### Evidence References
+
+- `powerbi/dax/15_geographic_dashboard_helpers.dax`
+- `sql/47_powerbi_geographic_dashboard_validation.sql`
+- `assets/screenshots/06_geographic_coverage_quality.png`
 
 ---
 
@@ -408,14 +445,14 @@ Contents:
 Expected:
 All geographic metrics match known baselines.
 
-Status: PENDING
+Status: PASS — validated against the documented baseline and independent reconciliation checks.
 
 ### G2 — Geographic Partitions
 
 Expected:
 Four zero differences and four TRUE values.
 
-Status: PENDING
+Status: PASS — validated against the documented baseline and independent reconciliation checks.
 
 ### G3 — Four-Fact Comparison
 
@@ -423,7 +460,7 @@ Expected:
 Four records with corresponding
 map-ready and total populations.
 
-Status: PENDING
+Status: PASS — validated against the documented baseline and independent reconciliation checks.
 
 ### G4 — Monthly Order Reconciliation
 
@@ -434,14 +471,14 @@ Expected:
 - Flagged Coordinates: 1
 - Three differences: 0
 
-Status: PENDING
+Status: PASS — validated against the documented baseline and independent reconciliation checks.
 
 ### G5 — Top 10 Customer States
 
 Expected:
 Exactly ten states with counts matching SQL-2.
 
-Status: PENDING
+Status: PASS — validated against the documented baseline and independent reconciliation checks.
 
 ---
 
@@ -454,7 +491,7 @@ sql/47_powerbi_geographic_dashboard_validation.sql
 
 Geographic dimension fields inspected.
 
-Status: PENDING
+Status: PASS — validated against the documented baseline and independent reconciliation checks.
 
 ### SQL-1
 
@@ -464,7 +501,7 @@ Expected:
 All population checks PASS.
 All partition differences zero.
 
-Status: PENDING
+Status: PASS — validated against the documented baseline and independent reconciliation checks.
 
 ### SQL-2
 
@@ -474,7 +511,7 @@ Expected:
 State codes and counts match G5
 and the corresponding dashboard chart.
 
-Status: PENDING
+Status: PASS — validated against the documented baseline and independent reconciliation checks.
 
 ### SQL-3
 
@@ -482,7 +519,7 @@ Purchase-month geographic completeness.
 
 Compare monthly Power BI values against SQL.
 
-Status: PENDING
+Status: PASS — validated against the documented baseline and independent reconciliation checks.
 
 ### SQL-4A
 
@@ -493,7 +530,7 @@ Expected:
 14,876 map-ready locations.
 No invalid map-ready coordinates.
 
-Status: PENDING
+Status: PASS — validated against the documented baseline and independent reconciliation checks.
 
 ### SQL-4B
 
@@ -503,7 +540,7 @@ Expected:
 3,095 sellers.
 3,088 with geographic reference.
 
-Status: PENDING
+Status: PASS — validated against the documented baseline and independent reconciliation checks.
 
 ### SQL-5
 
@@ -513,7 +550,7 @@ Expected:
 Full: 278 missing, 1 flagged, 99,162 map-ready.
 Q1: 59 missing, 0 flagged, 20,568 map-ready.
 
-Status: PENDING
+Status: PASS — validated against the documented baseline and independent reconciliation checks.
 
 ---
 
@@ -542,38 +579,38 @@ Outgoing interactions None.
 
 ## 16. Interaction QA
 
-- [ ] Purchase Date filters all six cards.
-- [ ] Purchase Date filters all four charts.
-- [ ] Order Status filters all six cards.
-- [ ] Order Status filters all four charts.
-- [ ] Full-history cards match baselines.
-- [ ] Q1 delivered cards match baselines.
-- [ ] Top 10 states match DAX and SQL.
-- [ ] Month selection filters by purchase month.
-- [ ] State chart outgoing interactions are None.
-- [ ] Fact comparison outgoing interactions are None.
-- [ ] Geographic exceptions outgoing interactions are None.
-- [ ] Seller dimension remains independent of purchase cohort.
-- [ ] Clear all slicers restores full-history values.
+- [x] Purchase Date filters all six cards.
+- [x] Purchase Date filters all four charts.
+- [x] Order Status filters all six cards.
+- [x] Order Status filters all four charts.
+- [x] Full-history cards match baselines.
+- [x] Q1 delivered cards match baselines.
+- [x] Top 10 states match DAX and SQL.
+- [x] Month selection filters by purchase month.
+- [x] State chart outgoing interactions are None.
+- [x] Fact comparison outgoing interactions are None.
+- [x] Geographic exceptions outgoing interactions are None.
+- [x] Seller dimension remains independent of purchase cohort.
+- [x] Clear all slicers restores full-history values.
 
 ---
 
 ## 17. Visual QA
 
-- [ ] Page heading is correct.
-- [ ] Six KPI cards are aligned.
-- [ ] Top 10 state ranking is readable.
-- [ ] State values are sorted descending.
-- [ ] Exact state counts are accessible via tooltips.
-- [ ] Monthly labels are chronological.
-- [ ] Four fact comparison bars are present.
-- [ ] Fact percentages are correctly formatted.
-- [ ] Geographic exceptions show exact counts.
-- [ ] Inherited Product/Seller filters removed.
-- [ ] No unnecessary axis titles.
-- [ ] No redundant chart subtitles.
-- [ ] Gridlines hidden in final screenshot.
-- [ ] No overlapping or truncated visuals.
+- [x] Page heading is correct.
+- [x] Six KPI cards are aligned.
+- [x] Top 10 state ranking is readable.
+- [x] State values are sorted descending.
+- [x] Exact state counts are accessible via tooltips.
+- [x] Monthly labels are chronological.
+- [x] Four fact comparison bars are present.
+- [x] Fact percentages are correctly formatted.
+- [x] Geographic exceptions show exact counts.
+- [x] Inherited Product/Seller filters removed.
+- [x] No unnecessary axis titles.
+- [x] No redundant chart subtitles.
+- [x] Gridlines hidden in final screenshot.
+- [x] No overlapping or truncated visuals.
 
 ---
 
@@ -637,26 +674,85 @@ docs/geographic_reference_methodology.md
 
 ---
 
+
 ## 20. Final Sign-Off
 
-Page:
-06 Geographic Coverage and Data Quality
+**Page:** 06 Geographic Coverage & Data Quality
 
-Current status:
-IN PROGRESS
+**Final status: PASS**
 
-Requirements for PASS:
+### Full-History Results
 
-- Six KPI cards correct
-- Four native charts created
-- All five DAX checks passed
-- All independent SQL checks passed
-- Top 10 state ranking matched
-- Full and Q1 populations reconciled
-- Visual interactions tested
-- Final visual QA completed
-- PBIX and documentation saved
+| Metric | Result |
+|---|---:|
+| Total Orders | 99,441 |
+| Geo-Referenced Orders | 99,163 |
+| Map-Ready Orders | 99,162 |
+| Map-Ready Order Share | 99.72% |
+| Missing Geo Reference | 278 |
+| Flagged Coordinates | 1 |
+| Map-Ready Sellers | 3,088 |
 
-After completion:
-Proceed to cross-page dashboard QA,
-repository cleanup and GitHub publication.
+### Four-Fact Geographic Coverage
+
+| Fact | Total | Map-Ready | Share |
+|---|---:|---:|---:|
+| Orders | 99,441 | 99,162 | 99.72% |
+| Order Items | 112,650 | 112,347 | 99.73% |
+| Payments | 103,886 | 103,598 | 99.72% |
+| Reviews | 99,224 | 98,944 | 99.72% |
+
+### Q1 2018 Delivered Cohort
+
+| Metric | Result |
+|---|---:|
+| Total Orders | 20,627 |
+| Map-Ready Orders | 20,568 |
+| Map-Ready Order Share | 99.71% |
+| Missing Geo Reference | 59 |
+| Flagged Coordinates | 0 |
+| Map-Ready Sellers | 3,088 |
+
+### Completed QA
+
+- [x] Six KPI cards validated
+- [x] Four native visuals created
+- [x] DAX G1 through G5 passed
+- [x] Independent SQL checks passed
+- [x] Top 10 state ranking reconciled
+- [x] Geographic populations reconciled
+- [x] Full-history cohort validated
+- [x] Q1 delivered cohort validated
+- [x] Geographic exceptions retained
+- [x] Chart interactions tested
+- [x] Final visual QA completed
+- [x] PBIX and documentation saved
+
+### Geographic Safeguards
+
+Geographic matching is based on customer
+ZIP-prefix reference information.
+
+Map-ready status indicates suitability
+for geographic analysis; it is not proof
+of exact residential or delivery coordinates.
+
+Missing and flagged records remain represented
+in the appropriate source populations.
+
+### Visualization Decision
+
+The dashboard uses Top 10 Customer States
+by Map-Ready Orders instead of Azure Maps.
+
+No organizational Power BI Service account
+is required for the native state-ranking chart.
+
+The published dashboard screenshot provides
+static visual evidence. Interactive report
+functionality remains in the local PBIX.
+
+**Final publication status: PASS**
+
+Consolidated release reference:
+`docs/powerbi_release_qa_7_5.md`
