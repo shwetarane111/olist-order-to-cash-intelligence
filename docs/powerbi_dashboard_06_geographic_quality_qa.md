@@ -667,7 +667,7 @@ QA:
 docs/powerbi_dashboard_06_geographic_quality_qa.md
 
 KPI coverage:
-docs/powerbi_kpi_coverage_final_after_task11.csv
+docs/powerbi_kpi_coverage.csv
 
 Geographic methodology:
 docs/geographic_reference_methodology.md
