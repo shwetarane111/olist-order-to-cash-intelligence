@@ -135,7 +135,7 @@ The Reconciliation Status chart has no outgoing cross-visual filtering because i
 
 - DAX validation: monthly aggregation, source order-status counts, reconciliation-status counts, full-history baseline, and Q1 delivered cohort.
 - PostgreSQL validation: `sql/42_powerbi_executive_overview_validation.sql`.
-- KPI requirements coverage: `docs/powerbi_kpi_coverage_final_after_task11.csv` (55 of 55 documented KPI requirements marked PASS after Task 11).
+- KPI requirements coverage: `docs/powerbi_kpi_coverage.csv` (55 of 55 documented KPI requirements marked PASS after Task 11).
 - Earlier financial, fulfillment, customer, payment, item, geography, and review reconciliation SQL files provide supporting evidence for these values.
 
 **Outcome:** The user reported successful DAX/SQL reconciliation and all interaction checks for Page 01. This report documents those confirmed outcomes; it does not imply a fresh programmatic inspection of the local PBIX file.
