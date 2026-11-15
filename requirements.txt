@@ -1,0 +1,7 @@
+
+# Direct dependencies observed in the project scripts.
+# Versions are not pinned to a tested environment.
+
+pandas
+SQLAlchemy
+psycopg[binary]
