@@ -132,7 +132,7 @@ LEFT(
 -- QA:
 -- docs/powerbi_dashboard_05_product_seller_qa.md
 
--- Status: PENDING final Page 05 checks.
+-- Status: PASS — Page 05 DAX, SQL and visual QA completed.
 
 -- =====================================================
 -- END OF FILE
